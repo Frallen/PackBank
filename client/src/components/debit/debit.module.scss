@@ -1,0 +1,43 @@
+.Main {
+  margin: 2em 15vw;
+  .blockcards {
+    .card {
+      box-shadow: 0 0px 5px 0px #000;
+      border-radius: 1rem;
+      margin: 0 auto;
+      margin-bottom: 1em;
+      padding: 1em;
+      max-width: 45vw;
+      @media (max-width: 1240px) {
+        max-width: max-content;
+      }
+      .cardshortinfo {
+        display: flex;
+        justify-content: space-evenly;
+        @media (max-width: 1240px) {
+          flex-direction: column;
+        }
+        .logocardbox {
+          width: 270px;
+          flex-shrink: 0;
+          @media (max-width:1240px) {
+              width:100%;
+          }
+          .logocardbox_item {
+            display: block;
+            max-width: 100%;
+            height: auto;
+          }
+        }
+        .info {
+          flex-basis: 43%;
+          .smallinfo {
+            list-style-type: none;
+            .smallinfo_item {
+            }
+          }
+        }
+      }
+    }
+  }
+}
