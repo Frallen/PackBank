@@ -3,13 +3,8 @@ const { Schema, model, Types } = require("mongoose");
 const debit_schema = new Schema({
   id_bank: {
     required: true,
-    type: Number,
-  },
-  name_bank: {
-    required: true,
     type: String,
   },
-  
   name_card: {
     required: true,
     type: String,
