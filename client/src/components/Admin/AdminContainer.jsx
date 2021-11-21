@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Admin from "./admin";
 import {
@@ -7,18 +7,19 @@ import {
   DeleteBank,
   GetDebetCards,
   CreateDebetCard,
+  DeleteResp,
+  DeleteDebet,
 } from "./../../redux/adminReducer";
 
 const AdminCont = (props) => {
+  const [succ] = useState(props.succ === true ? true : false);
   useEffect(() => {
+    //
     props.GetBank();
     props.GetDebetCards();
-  }, [props.succ === true]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [succ]);
 
-  /* useEffect(() => {
-    
-  }, [props.succ === true]);
-*/
   let CreateDebetCard = (data) => {
     props.CreateDebetCard(data);
   };
@@ -33,8 +34,12 @@ const AdminCont = (props) => {
     props.DeleteBank(id);
   };
 
+  let DeleteDebet = (id) => {
+    props.DeleteDebet(id);
+  };
   return (
     <Admin
+      DeleteDebet={DeleteDebet}
       CreateBank={CreateBank}
       DeleteBank={DeleteBank}
       CreateDebetCard={CreateDebetCard}
@@ -48,6 +53,7 @@ let MapState = (state) => {
     data: state.admin.data,
     dataDebet: state.admin.dataDebet,
     succ: state.admin.succ,
+    loading: state.admin.loading,
   };
 };
 
@@ -57,4 +63,6 @@ export default connect(MapState, {
   DeleteBank,
   GetDebetCards,
   CreateDebetCard,
+  DeleteDebet,
+  DeleteResp,
 })(AdminCont);

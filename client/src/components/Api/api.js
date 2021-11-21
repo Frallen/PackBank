@@ -5,7 +5,7 @@ export const Admin = {
   NewBank(data) {
     return axios
       .post(
-        "/api/admin/bank",
+        "/api/admin/bank/create",
         {
           name_bank: data.name_bank,
           license: data.license,
@@ -24,16 +24,14 @@ export const Admin = {
   },
   //получить все банки
   GetBanks() {
-    return axios.get("/api/admin/bank").then((resp) => resp);
+    return axios.get("/api/admin/bank/get").then((resp) => resp);
   },
   //удалить банк
-  DeleteBank(data) {
+  DeleteBank(id) {
     return axios
       .delete(
-        "/api/admin/bank",
-        {
-          id: data.id,
-        },
+        //удаляю банк по url id
+        `/api/admin/bank/delete/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -46,7 +44,7 @@ export const Admin = {
   CreateDebet(data) {
     return axios
       .post(
-        "/api/admin/debet",
+        "/api/admin/debet/create",
         {
           id_bank: data.id_bank,
           name_bank: data.name_bank,
@@ -69,7 +67,16 @@ export const Admin = {
   },
   //получить все дебтовые карты
   GetALLDebet() {
-    return axios.get("/api/admin/debet").then((resp) => resp);
+    return axios.get("/api/admin/debet/get").then((resp) => resp);
+  },
+  DeleteDebet(id) {
+    return axios
+      .delete(`/api/admin/debet/delete/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((resp) => resp);
   },
 };
 
