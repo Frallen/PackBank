@@ -3,21 +3,21 @@ const Bank = require("./../models/bank");
 const Debet = require("./../models/cards");
 const { check, validationResult } = require("express-validator");
 const router = Router();
+const mongoose = require("mongoose");
 //получить дебетовые карты
-router.get("/admin/debet/", async(req,res)=>{
-  try{
-    const getdebet=await Debet.find()
-    res.status(201).json(getdebet)
-  }catch(err){
-    res.status(500).json({message:"Что-то пошло не так"})
+router.get("/admin/debet/get", async (req, res) => {
+  try {
+    const getdebet = await Debet.find();
+    res.status(201).json(getdebet);
+  } catch (err) {
+    return res.status(500).json({ message: "Что-то пошло не так" });
   }
-})
+});
 // создать дебетовую карту
-router.post("/admin/debet/", async (req, res) => {
+router.post("/admin/debet/create", async (req, res) => {
   try {
     const {
       id_bank,
-      name_bank,
       name_card,
       srok,
       pay_system,
@@ -29,7 +29,6 @@ router.post("/admin/debet/", async (req, res) => {
     } = req.body;
     const card = new Debet({
       id_bank: id_bank,
-      name_bank: name_bank,
       name_card: name_card,
       srok: srok,
       pay_system: pay_system,
@@ -42,15 +41,35 @@ router.post("/admin/debet/", async (req, res) => {
 
     await card.save();
 
-    res.status(201).json({ message: "Карта успешно создана" });
+    res.status(201).json({ card });
   } catch (err) {
-    res.status(500).json({ message: "Что-то пошло не так" });
+    return res.status(500).json({ message: "Что-то пошло не так" });
   }
 });
 
+router.delete(
+  "/admin/debet/delete/:id",
+  //по url id и удаляю
+  async (req, res) => {
+    try {
+      //беру id банка из url
+      const { id } = req.params;
+      //чекаю сущесвует ли такой объект в бд
+      if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`Такого банка не сущесвует`);
+
+      await Debet.findByIdAndDelete(id);
+
+      res.status(201).json({ id });
+    } catch (err) {
+      return res.status(500).json({ message: "Что-то пошло не так." });
+    }
+  }
+);
+
 //добавляю банк
 router.post(
-  "/admin/bank/",
+  "/admin/bank/create",
 
   async (req, res) => {
     try {
@@ -71,41 +90,41 @@ router.post(
         About: About,
       });
       await bank.save();
-
-      res.status(201).json({ message: "Банк успешно создан." });
+      //после того как добавляю новый банк отправляю его на фронтенд
+      res.status(201).json({ bank });
     } catch (err) {
       //при ошибка неизвестных отсылаю 500 ошибку
-      return res.status(500).json(err.message);
+      return res.status(500).json({ message: error.message });
     }
   }
 );
 
 //Беру все записи о банках
-router.get("/admin/bank/", async (req, res) => {
+router.get("/admin/bank/get", async (req, res) => {
   try {
     const banks = await Bank.find();
     res.status(201).json(banks);
   } catch (err) {
-    res.status(500).json({ message: "Что-то пошло не так." });
+    return res.status(500).json({ message: "Что-то пошло не так." });
   }
 });
 //удалить банк
 router.delete(
-  "/admin/bank/",
-
+  "/admin/bank/delete/:id",
+  //по url id и удаляю
   async (req, res) => {
     try {
-      const { id } = req.body;
+      //беру id банка из url
+      const { id } = req.params;
+      //чекаю сущесвует ли такой объект в бд
+      if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`Такого банка не сущесвует`);
 
-      let snap = await Bank.findOneAndDelete({ id });
+      await Bank.findByIdAndDelete(id);
 
-      if (!snap) {
-        res.status(204).json({ message: "Запись не была найдена" });
-      }
-      const banks = await Bank.find();
-      res.status(200).json({ message: "Запись о банке успешно удалена" });
+      res.status(201).json({ id });
     } catch (err) {
-      res.status(500).json({ message: "Что-то пошло не так." });
+      return res.status(500).json({ message: "Что-то пошло не так." });
     }
   }
 );
