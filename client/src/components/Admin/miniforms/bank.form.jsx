@@ -11,35 +11,39 @@ import {
   Table,
   Modal,
 } from "antd";
-import {
-  CloseOutlined,
-  PlusOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import clas from "./../admin.module.scss";
 //антд
 const { confirm } = Modal;
-//валидация полей лиценции и номера телефона
-const validate = (values) => {
-  const errors = {};
-
-  if (!/^\d+$/.test(values.license)) {
-    errors.license = "Только цифры";
-  }
-
-  if (!/^\d+$/.test(values.phone_number)) {
-    errors.phone_number = "Только цифры";
-  }
-
-  return errors;
-};
 
 const BankForm = (props) => {
-//стейт скрыть и показывать форму
-  const [isShowBank,setShowBank1]=useState(false)
+  //валидация полей лицензии и номера телефона
+  const validate = (values) => {
+    const errors = {};
 
+    if (!/^\d+$/.test(values.license)) {
+      errors.license = "Только цифры";
+    }
+    //разложить массив до объекта и привести в строку тк пришедшие номера лицензий Numbers like int
+    let checklicense = props.data.map((p) => p.license.toString());
+    //чекаю номер из формы
+    let ismatch = checklicense.includes(values.license);
 
+    if (!idbank && ismatch) {
+      errors.license = "Банк с такой лицензией уже существует";
+    }
 
+    if (!/^\d+$/.test(values.phone_number)) {
+      errors.phone_number = "Только цифры";
+    }
+
+    return errors;
+  };
+
+  const [form] = Form.useForm();
+  //стейт скрыть и показывать форму
+  const [isShowBank, setShowBank1] = useState(false);
+  const [idbank, setUpdId] = useState(null);
   //колонки таблицы
   const columns = [
     {
@@ -79,13 +83,44 @@ const BankForm = (props) => {
       fixed: "right",
       render: (text, record) => (
         <Space size="middle">
-          <a> Изменить</a>
+          <a onClick={() => ChangeBank(record)}> Изменить</a>
           <a onClick={() => showDeleteConfirm(text._id)}>Удалить</a>
         </Space>
       ),
     },
   ];
+  const formik = useFormik({
+    initialValues: {
+      name_bank: "",
+      url: "",
+      license: "",
+      phone_number: "",
+      url_images: "",
+      About: "",
+    },
+    validate,
+    onSubmit: (values) => {
+      values.idbank = idbank;
+      //отправляю данные на серв
+      idbank ? props.UpadteBank(values) : props.CreateBank(values);
+      setUpdId(null);
+      //закрываю форму
+      setShowBank1(false);
 
+      form.resetFields();
+    },
+  });
+
+  let ChangeBank = (record) => {
+    setShowBank1(true);
+    setUpdId(record._id);
+    formik.setFieldValue("name_bank", record.name_bank);
+    formik.setFieldValue("url", record.url);
+    formik.setFieldValue("license", record.license);
+    formik.setFieldValue("phone_number", record.phone_number);
+    formik.setFieldValue("url_images", record.url_images);
+    formik.setFieldValue("About", record.About);
+  };
   let showDeleteConfirm = (id) => {
     confirm({
       title: "Вы хотите удалить банк?",
@@ -101,24 +136,6 @@ const BankForm = (props) => {
     });
   };
 
-  const formik = useFormik({
-    initialValues: {
-      name_bank: "",
-      url: "",
-      license: "",
-      phone_number: "",
-      url_images: "",
-      About: "",
-    },
-    validate,
-    onSubmit: (values) => {
-      //отправляю данные на серв
-      props.CreateBank(values);
-      //закрываю форму
-      setShowBank1(false);
-    },
-  });
-
   return (
     <div>
       <div className={clas.tableBlock_header}>
@@ -133,7 +150,6 @@ const BankForm = (props) => {
         </Button>
       </div>
       <Table
-        loading="true"
         size="large"
         columns={columns}
         dataSource={props.data}
@@ -153,11 +169,15 @@ const BankForm = (props) => {
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark onFinish={formik.handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          hideRequiredMark
+          onFinish={formik.handleSubmit}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="name_bank"
                 label="Название банка"
                 rules={[{ required: true, message: "Введите название банка" }]}
               >
@@ -170,7 +190,6 @@ const BankForm = (props) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="url"
                 label="Сайт банка"
                 rules={[{ required: true, message: "Вставьте ссылку на банк" }]}
               >
@@ -187,7 +206,6 @@ const BankForm = (props) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="license"
                 label="Номер лицензии банка"
                 rules={[
                   {
@@ -210,7 +228,6 @@ const BankForm = (props) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="phone_number"
                 label="Телефон банка(общий)"
                 type="tel"
                 rules={[{ required: true, message: "Введите телефон банка" }]}
@@ -231,53 +248,21 @@ const BankForm = (props) => {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.List name="url_images" label="Ссылки на изображения банка">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <Space
-                        key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
-                      >
-                        <Form.Item
-                          {...restField}
-                          name={[name, "first"]}
-                          fieldKey={[fieldKey, "first"]}
-                          rules={[
-                            { required: true, message: "Missing first name" },
-                          ]}
-                        >
-                          <Input
-                            placeholder="Ссылка "
-                            name="url_images"
-                            onChange={formik.handleChange}
-                            value={formik.values.url_images}
-                          />
-                        </Form.Item>
-
-                        <CloseOutlined onClick={() => remove(name)} />
-                      </Space>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusOutlined />}
-                      >
-                        Добавить ссылку
-                      </Button>
-                    </Form.Item>
-                  </>
-                )}
-              </Form.List>
+              <Form.Item
+                rules={[{ required: true, message: "Missing first name" }]}
+              >
+                <Input
+                  placeholder="Ссылка "
+                  name="url_images"
+                  onChange={formik.handleChange}
+                  value={formik.values.url_images}
+                />
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="About"
                 label="Описание банка"
                 rules={[
                   {

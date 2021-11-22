@@ -20,6 +20,7 @@ import {
 import clas from "./../admin.module.scss";
 //антд
 const { confirm } = Modal;
+const { Option } = Select;
 //валидация полей лиценции и номера телефона
 const validate = (values) => {
   const errors = {};
@@ -53,8 +54,8 @@ const DebetCardForm = (props) => {
     },
     {
       title: "Принадлежит",
-      dataIndex: "id_bank",
-      key: "id_bank",
+      dataIndex: "name_bank",
+      key: "name_bank",
       responsive: ["lg"],
     },
     {
@@ -127,7 +128,7 @@ const DebetCardForm = (props) => {
       okType: "danger",
       cancelText: "Отменить",
       onOk() {
-        props.DeleteBank(id);
+        props.DeleteDebet(id);
       },
       onCancel() {},
     });
@@ -136,6 +137,7 @@ const DebetCardForm = (props) => {
   const formik = useFormik({
     initialValues: {
       id_bank: "",
+      name_bank: "",
       name_card: "",
       srok: "",
       pay_system: "",
@@ -147,6 +149,12 @@ const DebetCardForm = (props) => {
     },
     validate,
     onSubmit: (values) => {
+      //ищу в банках совпадение по айди
+      let bank = props.data.filter((p) => p._id === values.id_bank);
+      //беру название банка
+      let name_bank = bank.map((p) => p.name_bank);
+      //задаю в элемент
+      values.name_bank = name_bank[0];
       //отправляю данные на серв
       if (!values.osblug_pay) {
         values.osblug_pay = "Нет";
@@ -181,7 +189,6 @@ const DebetCardForm = (props) => {
         </Button>
       </div>
       <Table
-        loading="true"
         size="large"
         columns={columns}
         dataSource={props.dataDebet}
@@ -210,16 +217,20 @@ const DebetCardForm = (props) => {
                 rules={[{ required: true, message: "Введите название банка" }]}
               >
                 <Select
-                  onChange={formik.handleChange}
+                  // onChange={formik.handleChange}
                   value={formik.values.id_bank}
+                  onChange={(value) => {
+                    formik.setFieldValue("id_bank", value);
+                  }}
+                  onSelect={formik.handleChange}
                 >
                   {
                     //беру данные об банках,а именно id и название банка и пихаю в селект
                     props.data &&
                       props.data.map((p, index) => (
-                        <Select.Option key={index} value={p.id}>
+                        <Option key={index} value={p._id}>
                           {p.name_bank}
-                        </Select.Option>
+                        </Option>
                       ))
                   }
                 </Select>
@@ -273,7 +284,9 @@ const DebetCardForm = (props) => {
                 ]}
               >
                 <Select
-                  onChange={formik.handleChange}
+                  onChange={(value) => {
+                    formik.setFieldValue("pay_system", value);
+                  }}
                   value={formik.values.pay_system}
                 >
                   {systems.map((p, index) => (

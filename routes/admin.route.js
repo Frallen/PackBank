@@ -18,6 +18,7 @@ router.post("/admin/debet/create", async (req, res) => {
   try {
     const {
       id_bank,
+      name_bank,
       name_card,
       srok,
       pay_system,
@@ -29,6 +30,7 @@ router.post("/admin/debet/create", async (req, res) => {
     } = req.body;
     const card = new Debet({
       id_bank: id_bank,
+      name_bank: name_bank,
       name_card: name_card,
       srok: srok,
       pay_system: pay_system,
@@ -94,11 +96,25 @@ router.post(
       res.status(201).json({ bank });
     } catch (err) {
       //при ошибка неизвестных отсылаю 500 ошибку
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 );
 
+router.patch("/admin/bank/update/:id", async (req, res) => {
+  try {
+    const { name_bank, license, url, phone_number, url_images, About } =
+      req.body;
+    const upd = { name_bank, license, url, phone_number, url_images, About };
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`Такого банка не сущесвует`);
+    let snap = await Bank.findByIdAndUpdate(id, upd, { new: true });
+    res.status(201).json(snap);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+});
 //Беру все записи о банках
 router.get("/admin/bank/get", async (req, res) => {
   try {

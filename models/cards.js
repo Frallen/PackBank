@@ -5,6 +5,10 @@ const debit_schema = new Schema({
     required: true,
     type: String,
   },
+  name_bank: {
+    type: String,
+    required: true,
+  },
   name_card: {
     required: true,
     type: String,
@@ -34,7 +38,8 @@ const debit_schema = new Schema({
     type: String,
   },
   url_images: {
-    type: [],
+   required: true,
+    type: String,
   },
 });
 

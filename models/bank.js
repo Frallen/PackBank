@@ -19,7 +19,8 @@ const schema = new Schema({
     required: true,
   },
   url_images: {
-    type: [],
+   type: String,
+    required: true,
   },
   About: {
     type: String,

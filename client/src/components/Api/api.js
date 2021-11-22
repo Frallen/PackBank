@@ -40,6 +40,23 @@ export const Admin = {
       )
       .then((resp) => resp);
   },
+  //обновить запсь о банке
+  UpdateBank(data) {
+    return axios
+      .patch(`/api/admin/bank/update/${data.idbank}`, {
+        name_bank: data.name_bank,
+        license: data.license,
+        url: data.url,
+        phone_number: data.phone_number,
+        url_images: data.url_images,
+        About: data.About,
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((resp) => resp);
+  },
   //создать дебетовую карту
   CreateDebet(data) {
     return axios

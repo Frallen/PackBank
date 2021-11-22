@@ -5,6 +5,7 @@ const SubmitEnd = "SubmitEnd";
 const Error = "Error";
 const Clean = "Clean";
 const GetDataBank = "GetDataBank";
+const UpdateOneBank = "UpdateOneBank";
 const GetDataDebet = "GetDataDebet";
 const DeleteB = "DeleteB";
 const DeleteD = "DeleteD";
@@ -36,6 +37,12 @@ const AdminReducer = (state = initialValues, action) => {
       // копирую новый пришедший массив/объект и создаю новый
       // получается в массив data засовываю новые данные
       return { ...state, data: state.data.concat(action.data) };
+    /*    case UpdateOneBank:
+      return {
+        ...state,
+        data: action.data.map((p) => p._id === state.data.filter((item) => item._id === action.data._id)),
+      };*/
+
     case GetDataDebet:
       return {
         ...state,
@@ -67,6 +74,7 @@ const AdminReducer = (state = initialValues, action) => {
     case Clean: {
       return {
         ...state,
+        succ: false,
         data: null,
       };
     }
@@ -75,7 +83,7 @@ const AdminReducer = (state = initialValues, action) => {
   }
 };
 
-export const DeleteResp = () => ({ type: Clean });
+export const Clear = () => ({ type: Clean });
 
 export default AdminReducer;
 //создать банк
@@ -99,6 +107,19 @@ export const GetBank = () => async (dispatch) => {
     let snap = await Admin.GetBanks();
 
     dispatch({ type: SubmitEnd });
+    dispatch({ type: GetDataBank, data: snap.data });
+  } catch (err) {
+    dispatch({ type: Error, error: err.message });
+  }
+};
+//получить записи о всех банках
+export const UpadteBank = (data) => async (dispatch) => {
+  dispatch({ type: SubmitStart });
+  try {
+    let snap = await Admin.UpdateBank(data);
+
+    dispatch({ type: SubmitEnd });
+
     dispatch({ type: GetDataBank, data: snap.data });
   } catch (err) {
     dispatch({ type: Error, error: err.message });

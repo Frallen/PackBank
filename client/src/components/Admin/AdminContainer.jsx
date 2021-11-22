@@ -7,8 +7,8 @@ import {
   DeleteBank,
   GetDebetCards,
   CreateDebetCard,
-  DeleteResp,
   DeleteDebet,
+  UpadteBank,
 } from "./../../redux/adminReducer";
 
 const AdminCont = (props) => {
@@ -20,21 +20,26 @@ const AdminCont = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [succ]);
 
-  let CreateDebetCard = (data) => {
-    props.CreateDebetCard(data);
-  };
-
   let CreateBank = (data) => {
     //создать банк
     props.CreateBank(data);
   };
 
+  let UpadteBank = (data) => {
+    //обновляю банк
+    props.UpadteBank(data);
+  };
   let DeleteBank = (id) => {
     //удалить банк
     props.DeleteBank(id);
   };
+  let CreateDebetCard = (data) => {
+    //создать дебетовую карту
+    props.CreateDebetCard(data);
+  };
 
   let DeleteDebet = (id) => {
+    //удалить дебетовую карту
     props.DeleteDebet(id);
   };
   return (
@@ -43,6 +48,7 @@ const AdminCont = (props) => {
       CreateBank={CreateBank}
       DeleteBank={DeleteBank}
       CreateDebetCard={CreateDebetCard}
+      UpadteBank={UpadteBank}
       {...props}
     ></Admin>
   );
@@ -64,5 +70,5 @@ export default connect(MapState, {
   GetDebetCards,
   CreateDebetCard,
   DeleteDebet,
-  DeleteResp,
+  UpadteBank,
 })(AdminCont);
