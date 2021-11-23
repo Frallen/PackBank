@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const Bank = require("./../models/bank");
-const Debet = require("./../models/cards");
+const CreditCrd = require("./../models/creditcard");
+const Debet = require("../models/debet");
 const { check, validationResult } = require("express-validator");
 const router = Router();
 const mongoose = require("mongoose");
@@ -99,6 +100,119 @@ router.patch("/admin/debet/update/:id", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`Такого банка не сущесвует`);
     let data = await Debet.findByIdAndUpdate(id, upd, { new: true });
+    res.status(201).json(data);
+  } catch (err) {
+    return res.status(err.message);
+  }
+});
+
+//получить кредитные карты
+router.get("/admin/creditcrd/get", async (req, res) => {
+  try {
+    const getcredit = await CreditCrd.find();
+    res.status(201).json(getcredit);
+  } catch (err) {
+    return res.status(500).json({ message: "Что-то пошло не так" });
+  }
+});
+// создать кредитную карту
+router.post("/admin/creditcrd/create", async (req, res) => {
+  try {
+    const {
+      id_bank,
+      name_bank,
+      name_card,
+      About,
+      srok,
+      pay_system,
+      sms_pay,
+      cash,
+      stavka,
+      limit,
+      dayzToPay,
+      osblug_pay,
+      url_images,
+    } = req.body;
+    const cardcrd = new CreditCrd({
+      id_bank: id_bank,
+      name_bank: name_bank,
+      name_card: name_card,
+      srok: srok,
+      About: About,
+      pay_system: pay_system,
+      sms_pay: sms_pay,
+      cash: cash,
+      stavka: stavka,
+      limit: limit,
+      dayzToPay: dayzToPay,
+      osblug_pay: osblug_pay,
+      url_images: url_images,
+    });
+
+    await cardcrd.save();
+
+    res.status(201).json({ cardcrd });
+  } catch (err) {
+    return res.status(500).json({ message: "Что-то пошло не так" });
+  }
+});
+//удалить кредитную карту
+router.delete(
+  "/admin/creditcrd/delete/:id",
+  //по url id и удаляю
+  async (req, res) => {
+    try {
+      //беру id банка из url
+      const { id } = req.params;
+      //чекаю сущесвует ли такой объект в бд
+      if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`Такого банка не сущесвует`);
+
+      await CreditCrd.findByIdAndDelete(id);
+
+      res.status(201).json({ id });
+    } catch (err) {
+      return res.status(500).json({ message: "Что-то пошло не так." });
+    }
+  }
+);
+//обновить кредитную карту
+router.patch("/admin/creditcrd/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      id_bank,
+      name_bank,
+      name_card,
+      About,
+      srok,
+      pay_system,
+      sms_pay,
+      cash,
+      stavka,
+      limit,
+      dayzToPay,
+      osblug_pay,
+      url_images,
+    } = req.body;
+    const upd = {
+      id_bank,
+      name_bank,
+      name_card,
+      About,
+      srok,
+      pay_system,
+      sms_pay,
+      cash,
+      stavka,
+      limit,
+      dayzToPay,
+      osblug_pay,
+      url_images,
+    };
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`Такого банка не сущесвует`);
+    let data = await CreditCrd.findByIdAndUpdate(id, upd, { new: true });
     res.status(201).json(data);
   } catch (err) {
     return res.status(err.message);
