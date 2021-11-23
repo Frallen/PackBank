@@ -121,6 +121,82 @@ export const Admin = {
       })
       .then((resp) => resp);
   },
+
+
+//создать кредитную карту
+CreateCreditCard(data) {
+  return axios
+    .post(
+      "/api/admin/creditcrd/create",
+      {
+        id_bank: data.id_bank,
+        name_bank: data.name_bank,
+        name_card: data.name_card,
+        srok: data.srok,
+        About: data.About,
+        pay_system: data.pay_system,
+        sms_pay: data.sms_pay,
+        cash: data.cash,
+        stavka: data.stavka,
+        limit:data.limit,
+        dayzToPay:data.dayzToPay,
+        osblug_pay: data.osblug_pay,
+        url_images: data.url_images,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((resp) => resp);
+},
+//получить все дебтовые карты
+GetALLCreditCrd() {
+  return axios.get("/api/admin/creditcrd/get").then((resp) => resp);
+},
+//обновить дебетовую карту
+UpdateCreditCrd(data) {
+  return axios
+    .patch(
+      `/api/admin/creditcrd/update/${data.id}`,
+      {
+        id_bank: data.id_bank,
+        name_bank: data.name_bank,
+        name_card: data.name_card,
+        srok: data.srok,
+        About: data.About,
+        pay_system: data.pay_system,
+        sms_pay: data.sms_pay,
+        cash: data.cash,
+        stavka: data.stavka,
+        limit:data.limit,
+        dayzToPay:data.dayzToPay,
+        osblug_pay: data.osblug_pay,
+        url_images: data.url_images,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((resp) => resp);
+},
+//удалить дебетовую карту
+DeleteCreditCrd(id) {
+  return axios
+    .delete(`/api/admin/creditcrd/delete/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((resp) => resp);
+},
+
+
+
+
 };
 
 export const Auth = {
