@@ -1,6 +1,6 @@
 const { Schema, model, Types } = require("mongoose");
 
-const debit_schema = new Schema({
+const Credcard_schema = new Schema({
   id_bank: {
     required: true,
     type: String,
@@ -10,6 +10,10 @@ const debit_schema = new Schema({
     required: true,
   },
   name_card: {
+    required: true,
+    type: String,
+  },
+  About: {
     required: true,
     type: String,
   },
@@ -25,11 +29,19 @@ const debit_schema = new Schema({
     required: true,
     type: String,
   },
-  ostatok: {
+  cash: {
+    required: true,
+    type: Boolean,
+  },
+  stavka: {
     required: true,
     type: String,
   },
-  cashback: {
+  limit: {
+    required: true,
+    type: String,
+  },
+  dayzToPay: {
     required: true,
     type: String,
   },
@@ -38,9 +50,9 @@ const debit_schema = new Schema({
     type: String,
   },
   url_images: {
-   required: true,
+    required: true,
     type: String,
   },
 });
 
-module.exports = model("Debet", debit_schema);
+module.exports = model("CreditCrd", Credcard_schema);
