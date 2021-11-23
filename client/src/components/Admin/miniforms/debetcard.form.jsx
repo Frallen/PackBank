@@ -12,29 +12,28 @@ import {
   Modal,
   Select,
 } from "antd";
-import {
-  CloseOutlined,
-  PlusOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import clas from "./../admin.module.scss";
 //антд
 const { confirm } = Modal;
 const { Option } = Select;
-//валидация полей лиценции и номера телефона
-const validate = (values) => {
-  const errors = {};
-
-  if (!/^\d+$/.test(values.srok)) {
-    errors.srok = "Только цифры";
-  }
-
-  return errors;
-};
 
 const DebetCardForm = (props) => {
+  const [form] = Form.useForm();
   //стейт скрыть и показывать форму
   const [isShowBank, setShowBank1] = useState(false);
+  const [idbank, setUpdId] = useState("");
+  //валидация полей лиценции и номера телефона
+  const validate = (values) => {
+    const errors = {};
+
+    if (!idbank && !/^\d+$/.test(values.srok)) {
+      errors.srok = "Только цифры";
+    }
+
+    return errors;
+  };
+
   //массив платежных систем
   const systems = [
     { type: "Visa" },
@@ -112,7 +111,7 @@ const DebetCardForm = (props) => {
       fixed: "right",
       render: (text, record) => (
         <Space size="middle">
-          <a> Изменить</a>
+          <a onClick={() => ChangeBank(record)}> Изменить</a>
           <a onClick={() => showDeleteConfirm(text._id)}>Удалить</a>
         </Space>
       ),
@@ -169,11 +168,34 @@ const DebetCardForm = (props) => {
         values.sms_pay = "Нет";
       }
 
-      props.CreateDebetCard(values);
+      values.id = idbank;
+      //отправляю данные на серв
+      idbank ? props.UpdateDebetCard(values) : props.CreateDebetCard(values);
+      setUpdId(null);
       //закрываю форму
       setShowBank1(false);
+
+      //закрываю форму
+      setShowBank1(false);
+      form.resetFields();
     },
   });
+
+  let ChangeBank = (record) => {
+    setShowBank1(true);
+    setUpdId(record._id);
+    formik.setFieldValue("id_bank", record.id_bank);
+    formik.setFieldValue("name_bank", record.name_bank);
+    formik.setFieldValue("name_card", record.name_card);
+    formik.setFieldValue("srok", record.srok);
+    formik.setFieldValue("pay_system", record.pay_system);
+    formik.setFieldValue("sms_pay", record.sms_pay);
+    formik.setFieldValue("ostatok", record.ostatok);
+    formik.setFieldValue("cashback", record.cashback);
+    formik.setFieldValue("phone_number", record.phone_number);
+    formik.setFieldValue("url_images", record.url_images);
+    formik.setFieldValue("osblug_pay", record.osblug_pay);
+  };
 
   return (
     <div>
@@ -208,11 +230,15 @@ const DebetCardForm = (props) => {
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark onFinish={formik.handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          hideRequiredMark
+          onFinish={formik.handleSubmit}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="id_bank"
                 label="Название банка"
                 rules={[{ required: true, message: "Введите название банка" }]}
               >
@@ -238,7 +264,6 @@ const DebetCardForm = (props) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="name_card"
                 label="Название карты"
                 rules={[{ required: true, message: "Введите название карты" }]}
               >
@@ -254,7 +279,6 @@ const DebetCardForm = (props) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="srok"
                 label="Срок действия карты"
                 rules={[
                   {
@@ -277,7 +301,6 @@ const DebetCardForm = (props) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="pay_system"
                 label="Платежная система"
                 rules={[
                   { required: true, message: "Выберите платежную систему" },
@@ -300,52 +323,27 @@ const DebetCardForm = (props) => {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.List name="url_images" label="Ссылки на изображения банка">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <Space
-                        key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
-                      >
-                        <Form.Item
-                          {...restField}
-                          name={[name, "first"]}
-                          fieldKey={[fieldKey, "first"]}
-                          rules={[
-                            { required: true, message: "Missing first name" },
-                          ]}
-                        >
-                          <Input
-                            placeholder="Ссылка "
-                            name="url_images"
-                            onChange={formik.handleChange}
-                            value={formik.values.url_images}
-                          />
-                        </Form.Item>
-
-                        <CloseOutlined onClick={() => remove(name)} />
-                      </Space>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusOutlined />}
-                      >
-                        Добавить ссылку
-                      </Button>
-                    </Form.Item>
-                  </>
-                )}
-              </Form.List>
+              <Form.Item
+                label="Ссылка на изображение карты"
+                rules={[
+                  {
+                    required: true,
+                    message: "Введите ссылка на изображение карты",
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="Ссылка "
+                  name="url_images"
+                  onChange={formik.handleChange}
+                  value={formik.values.url_images}
+                />
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="sms_pay" label="Плата за смс">
+              <Form.Item label="Плата за смс">
                 <Input
                   name="sms_pay"
                   onChange={formik.handleChange}
@@ -354,7 +352,7 @@ const DebetCardForm = (props) => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="ostatok" label="Введите процент на остаток ">
+              <Form.Item label="Введите процент на остаток ">
                 <Input
                   name="ostatok"
                   onChange={formik.handleChange}
@@ -365,7 +363,7 @@ const DebetCardForm = (props) => {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="cashback" label="Процент кешбека(если есть)">
+              <Form.Item label="Процент кешбека(если есть)">
                 <Input
                   name="cashback"
                   onChange={formik.handleChange}
@@ -374,10 +372,7 @@ const DebetCardForm = (props) => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name="osblug_pay"
-                label="Введите плату сумму за обслуживание "
-              >
+              <Form.Item label="Введите плату сумму за обслуживание ">
                 <Input
                   name="osblug_pay"
                   onChange={formik.handleChange}

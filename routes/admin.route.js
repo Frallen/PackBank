@@ -48,7 +48,7 @@ router.post("/admin/debet/create", async (req, res) => {
     return res.status(500).json({ message: "Что-то пошло не так" });
   }
 });
-
+//удалить дебетовую карту
 router.delete(
   "/admin/debet/delete/:id",
   //по url id и удаляю
@@ -68,6 +68,42 @@ router.delete(
     }
   }
 );
+//обновить дебетовую карту
+router.patch("/admin/debet/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      id_bank,
+      name_bank,
+      name_card,
+      srok,
+      pay_system,
+      sms_pay,
+      ostatok,
+      cashback,
+      osblug_pay,
+      url_images,
+    } = req.body;
+    const upd = {
+      id_bank,
+      name_bank,
+      name_card,
+      srok,
+      pay_system,
+      sms_pay,
+      ostatok,
+      cashback,
+      osblug_pay,
+      url_images,
+    };
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`Такого банка не сущесвует`);
+    let data = await Debet.findByIdAndUpdate(id, upd, { new: true });
+    res.status(201).json(data);
+  } catch (err) {
+    return res.status(err.message);
+  }
+});
 
 //добавляю банк
 router.post(
@@ -100,7 +136,7 @@ router.post(
     }
   }
 );
-
+//обновить банк
 router.patch("/admin/bank/update/:id", async (req, res) => {
   try {
     const { name_bank, license, url, phone_number, url_images, About } =

@@ -86,6 +86,32 @@ export const Admin = {
   GetALLDebet() {
     return axios.get("/api/admin/debet/get").then((resp) => resp);
   },
+  //обновить дебетовую карту
+  UpdateDebet(data) {
+    return axios
+      .patch(
+        `/api/admin/debet/update/${data.id}`,
+        {
+          id_bank: data.id_bank,
+          name_bank: data.name_bank,
+          name_card: data.name_card,
+          srok: data.srok,
+          pay_system: data.pay_system,
+          sms_pay: data.sms_pay,
+          ostatok: data.ostatok,
+          cashback: data.cashback,
+          osblug_pay: data.osblug_pay,
+          url_images: data.url_images,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((resp) => resp);
+  },
+  //удалить дебетовую карту
   DeleteDebet(id) {
     return axios
       .delete(`/api/admin/debet/delete/${id}`, {

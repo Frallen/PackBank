@@ -82,7 +82,7 @@ const BankForm = (props) => {
       key: "action",
       fixed: "right",
       render: (text, record) => (
-        <Space size="middle">
+        <Space size="small">
           <a onClick={() => ChangeBank(record)}> Изменить</a>
           <a onClick={() => showDeleteConfirm(text._id)}>Удалить</a>
         </Space>
