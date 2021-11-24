@@ -12,6 +12,7 @@ import {
   Modal,
   Select,
 } from "antd";
+import * as Yup from "yup";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import clas from "./../admin.module.scss";
 //антд
@@ -23,16 +24,17 @@ const DebetCardForm = (props) => {
   //стейт скрыть и показывать форму
   const [isShowBank, setShowBank1] = useState(false);
   const [idbank, setUpdId] = useState("");
-  //валидация полей лиценции и номера телефона
-  const validate = (values) => {
-    const errors = {};
-
-    if (!idbank && !/^\d+$/.test(values.srok)) {
-      errors.srok = "Только цифры";
-    }
-
-    return errors;
-  };
+  
+//валидация полей лиценции и номера телефона
+  const DebetShema = Yup.object().shape({
+    id_bank: Yup.string().required("Это обязательное поле"),
+    name_card: Yup.string().required("Это обязательное поле"),
+    pay_system: Yup.string().required("Это обязательное поле"),
+    url_images: Yup.string().required("Это обязательное поле"),
+    srok: Yup.number()
+      .typeError("Только цифры")
+      .required("Это обязательное поле"),
+  });
 
   //массив платежных систем
   const systems = [
@@ -146,7 +148,8 @@ const DebetCardForm = (props) => {
       cashback: "",
       osblug_pay: "",
     },
-    validate,
+    //валидация yup
+    validationSchema: DebetShema,
     onSubmit: (values) => {
       //ищу в банках совпадение по айди
       let bank = props.data.filter((p) => p._id === values.id_bank);
@@ -192,7 +195,6 @@ const DebetCardForm = (props) => {
     formik.setFieldValue("sms_pay", record.sms_pay);
     formik.setFieldValue("ostatok", record.ostatok);
     formik.setFieldValue("cashback", record.cashback);
-    formik.setFieldValue("phone_number", record.phone_number);
     formik.setFieldValue("url_images", record.url_images);
     formik.setFieldValue("osblug_pay", record.osblug_pay);
   };
@@ -200,7 +202,7 @@ const DebetCardForm = (props) => {
   return (
     <div>
       <div className={clas.tableBlock_header}>
-        <h3>Список карт</h3>
+        <h3>Список дебетовых карт карт</h3>
         <Button
           type="primary"
           onClick={() => setShowBank1(true)}
@@ -230,17 +232,13 @@ const DebetCardForm = (props) => {
           </Space>
         }
       >
-        <Form
-          form={form}
-          layout="vertical"
-          hideRequiredMark
-          onFinish={formik.handleSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={formik.handleSubmit}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label="Название банка"
-                rules={[{ required: true, message: "Введите название банка" }]}
+                validateStatus={formik.errors.id_bank && "error"}
+                help={formik.errors.id_bank}
               >
                 <Select
                   // onChange={formik.handleChange}
@@ -265,7 +263,8 @@ const DebetCardForm = (props) => {
             <Col span={12}>
               <Form.Item
                 label="Название карты"
-                rules={[{ required: true, message: "Введите название карты" }]}
+                validateStatus={formik.errors.name_card && "error"}
+                help={formik.errors.name_card}
               >
                 <Input
                   style={{ width: "100%" }}
@@ -280,12 +279,6 @@ const DebetCardForm = (props) => {
             <Col span={12}>
               <Form.Item
                 label="Срок действия карты"
-                rules={[
-                  {
-                    required: true,
-                    message: "Введите срок действия карты",
-                  },
-                ]}
                 validateStatus={formik.errors.srok && "error"}
                 help={formik.errors.srok}
               >
@@ -302,9 +295,8 @@ const DebetCardForm = (props) => {
             <Col span={12}>
               <Form.Item
                 label="Платежная система"
-                rules={[
-                  { required: true, message: "Выберите платежную систему" },
-                ]}
+                validateStatus={formik.errors.pay_system && "error"}
+                help={formik.errors.pay_system}
               >
                 <Select
                   onChange={(value) => {
@@ -325,12 +317,8 @@ const DebetCardForm = (props) => {
             <Col span={12}>
               <Form.Item
                 label="Ссылка на изображение карты"
-                rules={[
-                  {
-                    required: true,
-                    message: "Введите ссылка на изображение карты",
-                  },
-                ]}
+                validateStatus={formik.errors.url_images && "error"}
+                help={formik.errors.url_images}
               >
                 <Input
                   placeholder="Ссылка "
@@ -348,6 +336,7 @@ const DebetCardForm = (props) => {
                   name="sms_pay"
                   onChange={formik.handleChange}
                   value={formik.values.sms_pay}
+                  addonAfter="в/мес"
                 />
               </Form.Item>
             </Col>
@@ -357,6 +346,7 @@ const DebetCardForm = (props) => {
                   name="ostatok"
                   onChange={formik.handleChange}
                   value={formik.values.ostatok}
+                  addonAfter="в/мес"
                 />
               </Form.Item>
             </Col>
@@ -368,6 +358,7 @@ const DebetCardForm = (props) => {
                   name="cashback"
                   onChange={formik.handleChange}
                   value={formik.values.cashback}
+                  addonAfter="в/мес"
                 />
               </Form.Item>
             </Col>
@@ -377,6 +368,7 @@ const DebetCardForm = (props) => {
                   name="osblug_pay"
                   onChange={formik.handleChange}
                   value={formik.values.osblug_pay}
+                  addonAfter="в/мес"
                 />
               </Form.Item>
             </Col>

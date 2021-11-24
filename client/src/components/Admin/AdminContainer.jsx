@@ -3,7 +3,11 @@ import { connect } from "react-redux";
 import Admin from "./admin";
 import {
   CreateBank,
+  CreateCreditCard,
   GetBank,
+  GetCreditCards,
+  UpdateCreditCard,
+  DeleteCreditCard,
   DeleteBank,
   GetDebetCards,
   CreateDebetCard,
@@ -18,6 +22,7 @@ const AdminCont = (props) => {
     //
     props.GetBank();
     props.GetDebetCards();
+    props.GetCreditCards();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [succ]);
 
@@ -45,8 +50,22 @@ const AdminCont = (props) => {
     //удалить дебетовую карту
     props.DeleteDebet(id);
   };
+
+  let CreateCreditCard = (data) => {
+    props.CreateCreditCard(data);
+  };
+  let UpdateCreditCard = (data) => {
+    props.UpdateCreditCard(data);
+  };
+  let DeleteCreditCard = (data) => {
+    props.DeleteCreditCard(data);
+  };
+
   return (
     <Admin
+      CreateCreditCard={CreateCreditCard}
+      UpdateCreditCard={UpdateCreditCard}
+      DeleteCreditCard={DeleteCreditCard}
       CreateBank={CreateBank}
       UpadteBank={UpadteBank}
       DeleteBank={DeleteBank}
@@ -64,6 +83,7 @@ let MapState = (state) => {
     dataDebet: state.admin.dataDebet,
     succ: state.admin.succ,
     loading: state.admin.loading,
+    dataCreditCard: state.admin.dataCreditCard,
   };
 };
 
@@ -76,4 +96,8 @@ export default connect(MapState, {
   DeleteDebet,
   UpadteBank,
   UpdateDebetCard,
+  CreateCreditCard,
+  GetCreditCards,
+  UpdateCreditCard,
+  DeleteCreditCard,
 })(AdminCont);

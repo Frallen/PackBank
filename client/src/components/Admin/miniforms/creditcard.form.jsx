@@ -10,33 +10,51 @@ import {
   Space,
   Table,
   Modal,
+  Select,
 } from "antd";
-import {
-  CloseOutlined,
-  PlusOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import * as Yup from "yup";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import clas from "./../admin.module.scss";
 //антд
 const { confirm } = Modal;
-//валидация полей лиценции и номера телефона
-const validate = (values) => {
-  const errors = {};
-
-  if (!/^\d+$/.test(values.license)) {
-    errors.license = "Только цифры";
-  }
-
-  if (!/^\d+$/.test(values.phone_number)) {
-    errors.phone_number = "Только цифры";
-  }
-
-  return errors;
-};
+const { Option } = Select;
 
 const CreditCardForm = (props) => {
+  const [form] = Form.useForm();
   //стейт скрыть и показывать форму
   const [isShowBank, setShowBank1] = useState(false);
+  const [idbank, setUpdId] = useState("");
+
+  //валидация полей лиценции и номера телефона
+  const CreditShema = Yup.object().shape({
+    id_bank: Yup.string().required("Это обязательное поле"),
+    name_card: Yup.string().required("Это обязательное поле"),
+    srok: Yup.number()
+      .typeError("Только цифры")
+      .required("Это обязательное поле"),
+    About: Yup.string().required("Это обязательное поле"),
+    pay_system: Yup.string().required("Это обязательное поле"),
+
+    cash: Yup.string().required("Это обязательное поле"),
+    stavka: Yup.number()
+      .typeError("Только цифры")
+      .required("Это обязательное поле"),
+    limit: Yup.number()
+      .typeError("Только цифры")
+      .required("Это обязательное поле"),
+    dayzToPay: Yup.number()
+      .typeError("Только цифры")
+      .required("Это обязательное поле"),
+    url_images: Yup.string().required("Это обязательное поле"),
+  });
+
+  //массив платежных систем
+  const systems = [
+    { type: "Visa" },
+    { type: "MasterCard" },
+    { type: "Мир" },
+    { type: "Maestro" },
+  ];
 
   //колонки таблицы
   const columns = [
@@ -48,28 +66,52 @@ const CreditCardForm = (props) => {
       responsive: ["lg"],
     },
     {
-      title: "Название банка",
+      title: "Принадлежит",
       dataIndex: "name_bank",
       key: "name_bank",
       responsive: ["lg"],
     },
     {
-      title: "№ лицензии",
-      dataIndex: "license",
-      key: "license",
+      title: "Название карты",
+      dataIndex: "name_card",
+      key: "name_card",
       responsive: ["lg"],
     },
     {
-      title: "Ссылка на банк",
-      dataIndex: "url",
-      key: "url",
-      responsive: ["lg"],
+      title: "Для снятия наличных",
+      dataIndex: "cash",
+      key: "cash",
+      responsive: ["sm"],
     },
     {
-      title: "Номера телефонов",
-      dataIndex: "phone_number",
-      key: "phone_number",
-      responsive: ["lg"],
+      title: "Cтавка",
+      dataIndex: "stavka",
+      key: "stavka",
+      responsive: ["sm"],
+    },
+    {
+      title: "Максимальный лимит",
+      dataIndex: "limit",
+      key: "limit",
+      responsive: ["sm"],
+    },
+    {
+      title: "Грейс период",
+      dataIndex: "dayzToPay",
+      key: "dayzToPay",
+      responsive: ["sm"],
+    },
+    {
+      title: "Плата за обслуживание",
+      dataIndex: "osblug_pay",
+      key: "osblug_pay",
+      responsive: ["sm"],
+    },
+    {
+      title: "Изображения",
+      dataIndex: "url_images",
+      key: "url_images",
+      responsive: ["sm"],
     },
     {
       title: "Действие",
@@ -77,7 +119,7 @@ const CreditCardForm = (props) => {
       fixed: "right",
       render: (text, record) => (
         <Space size="middle">
-          <a> Изменить</a>
+          <a onClick={() => ChangeBank(record)}> Изменить</a>
           <a onClick={() => showDeleteConfirm(text._id)}>Удалить</a>
         </Space>
       ),
@@ -86,14 +128,14 @@ const CreditCardForm = (props) => {
 
   let showDeleteConfirm = (id) => {
     confirm({
-      title: "Вы хотите удалить банк?",
+      title: "Вы хотите удалить карту?",
       icon: <ExclamationCircleOutlined />,
-      content: "Все данные о банке, продукты будут удаленны",
+      content: "Все данные о карте будут удаленны",
       okText: "Подвердить",
       okType: "danger",
       cancelText: "Отменить",
       onOk() {
-        props.DeleteBank(id);
+        props.DeleteCreditCard(id);
       },
       onCancel() {},
     });
@@ -101,188 +143,297 @@ const CreditCardForm = (props) => {
 
   const formik = useFormik({
     initialValues: {
+      id_bank: "",
       name_bank: "",
-      url: "",
-      license: "",
-      phone_number: "",
-      url_images: "",
+      name_card: "",
+      srok: "",
       About: "",
+      pay_system: "",
+      sms_pay: "",
+      cash: "",
+      stavka: "",
+      limit: "",
+      dayzToPay: "",
+      osblug_pay: "",
+      url_images: "",
     },
-    validate,
+    //валидация yup
+    validationSchema: CreditShema,
     onSubmit: (values) => {
+      //ищу в банках совпадение по айди
+      let bank = props.data.filter((p) => p._id === values.id_bank);
+      //беру название банка
+      let name_bank = bank.map((p) => p.name_bank);
+      //задаю в элемент
+      values.name_bank = name_bank[0];
       //отправляю данные на серв
-      props.CreateBank(values);
+      if (!values.osblug_pay) {
+        values.osblug_pay = "Нет";
+      }
+      if (!values.sms_pay) {
+        values.sms_pay = "Нет";
+      }
+
+      values.id = idbank;
+      //отправляю данные на серв
+      idbank ? props.UpdateCreditCard(values) : props.CreateCreditCard(values);
+      setUpdId(null);
       //закрываю форму
       setShowBank1(false);
+
+      //закрываю форму
+      setShowBank1(false);
+      form.resetFields();
     },
   });
+
+  let ChangeBank = (record) => {
+    setShowBank1(true);
+    setUpdId(record._id);
+    formik.setFieldValue("id_bank", record.id_bank);
+    formik.setFieldValue("name_bank", record.name_bank);
+    formik.setFieldValue("name_card", record.name_card);
+    formik.setFieldValue("srok", record.srok);
+    formik.setFieldValue("About", record.About);
+    formik.setFieldValue("pay_system", record.pay_system);
+    formik.setFieldValue("sms_pay", record.sms_pay);
+    formik.setFieldValue("cash", record.cash);
+    formik.setFieldValue("stavka", record.stavka);
+    formik.setFieldValue("limit", record.limit);
+    formik.setFieldValue("dayzToPay", record.dayzToPay);
+    formik.setFieldValue("url_images", record.url_images);
+    formik.setFieldValue("osblug_pay", record.osblug_pay);
+  };
 
   return (
     <div>
       <div className={clas.tableBlock_header}>
-        <h3>Список банков</h3>
+        <h3>Список карт</h3>
         <Button
           type="primary"
           onClick={() => setShowBank1(true)}
           icon={<PlusOutlined />}
           className={clas.addbtn}
         >
-          Добавить банк
+          Добавить кредитную карту
         </Button>
       </div>
       <Table
-        loading="true"
         size="large"
         columns={columns}
-        dataSource={props.data}
+        dataSource={props.dataCreditCard}
         className={clas.Table}
       ></Table>
 
       <Drawer
-        title="Добавить новый банк"
+        title="Добавить новую кредитную карту"
         width={720}
         onClose={() => setShowBank1(false)}
         visible={isShowBank}
         bodyStyle={{ paddingBottom: 80 }}
         extra={
           <Space>
-            <Button onClick={() => setShowBank1(false)}>Cancel</Button>
-            <Button type="primary">Добавить банк</Button>
+            <Button onClick={() => setShowBank1(false)}>Отменить</Button>
+            <Button type="primary">Добавить карту</Button>
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark onFinish={formik.handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          hideRequiredMark
+          onFinish={formik.handleSubmit}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="name_bank"
                 label="Название банка"
-                rules={[{ required: true, message: "Введите название банка" }]}
+                validateStatus={formik.errors.id_bank && "error"}
+                help={formik.errors.id_bank}
               >
-                <Input
-                  onChange={formik.handleChange}
-                  value={formik.values.name_bank}
-                  name="name_bank"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="url"
-                label="Сайт банка"
-                rules={[{ required: true, message: "Вставьте ссылку на банк" }]}
-              >
-                <Input
-                  style={{ width: "100%" }}
-                  addonBefore="http://"
-                  name="url"
-                  onChange={formik.handleChange}
-                  value={formik.values.url}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="license"
-                label="Номер лицензии банка"
-                rules={[
+                <Select
+                  value={formik.values.id_bank}
+                  onChange={(value) => {
+                    formik.setFieldValue("id_bank", value);
+                  }}
+                  onSelect={formik.handleChange}
+                >
                   {
-                    required: true,
-                    message: "Введите номер лицензии банка от ЦБ",
-                  },
-                ]}
-                validateStatus={formik.errors.license && "error"}
-                help={formik.errors.license}
-              >
-                <Input
-                  style={{ width: "100%" }}
-                  name="license"
-                  onChange={formik.handleChange}
-                  value={formik.values.license}
-                  maxLength="13"
-                  minLength="13"
-                />
+                    //беру данные об банках,а именно id и название банка и пихаю в селект
+                    props.data &&
+                      props.data.map((p, index) => (
+                        <Option key={index} value={p._id}>
+                          {p.name_bank}
+                        </Option>
+                      ))
+                  }
+                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="phone_number"
-                label="Телефон банка(общий)"
-                type="tel"
-                rules={[{ required: true, message: "Введите телефон банка" }]}
-                validateStatus={formik.errors.phone_number && "error"}
-                help={formik.errors.phone_number}
+                label="Название карты"
+                validateStatus={formik.errors.name_card && "error"}
+                help={formik.errors.name_card}
               >
                 <Input
-                  addonBefore={"+"}
                   style={{ width: "100%" }}
-                  minLength="11"
-                  maxLength="11"
-                  name="phone_number"
+                  name="name_card"
                   onChange={formik.handleChange}
-                  value={formik.values.phone_number}
+                  value={formik.values.name_card}
                 />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.List name="url_images" label="Ссылки на изображения банка">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <Space
-                        key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
-                      >
-                        <Form.Item
-                          {...restField}
-                          name={[name, "first"]}
-                          fieldKey={[fieldKey, "first"]}
-                          rules={[
-                            { required: true, message: "Missing first name" },
-                          ]}
-                        >
-                          <Input
-                            placeholder="Ссылка "
-                            name="url_images"
-                            onChange={formik.handleChange}
-                            value={formik.values.url_images}
-                          />
-                        </Form.Item>
+              <Form.Item
+                label="Срок действия карты"
+                validateStatus={formik.errors.srok && "error"}
+                help={formik.errors.srok}
+              >
+                <Input
+                  style={{ width: "100%" }}
+                  name="srok"
+                  onChange={formik.handleChange}
+                  value={formik.values.srok}
+                  maxLength="1"
+                  minLength="1"
+                  addonAfter="Лет"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Платежная система"
+                validateStatus={formik.errors.pay_system && "error"}
+                help={formik.errors.pay_system}
+              >
+                <Select
+                  onChange={(value) => {
+                    formik.setFieldValue("pay_system", value);
+                  }}
+                  value={formik.values.pay_system}
+                >
+                  {systems.map((p, index) => (
+                    <Select.Option key={index} value={p.type}>
+                      {p.type}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Ссылка на изображение карты"
+                validateStatus={formik.errors.url_images && "error"}
+                help={formik.errors.url_images}
+              >
+                <Input
+                  placeholder="Ссылка "
+                  name="url_images"
+                  onChange={formik.handleChange}
+                  value={formik.values.url_images}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                validateStatus={formik.errors.dayzToPay && "error"}
+                help={formik.errors.dayzToPay}
+                label="Грейс период"
+              >
+                <Input
+                  name="dayzToPay"
+                  onChange={formik.handleChange}
+                  value={formik.values.dayzToPay}
+                  addonAfter="Дней"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Для снятия наличных?"
+                validateStatus={formik.errors.cash && "error"}
+                help={formik.errors.cash}
+              >
+                <Select
+                  onChange={(value) => {
+                    formik.setFieldValue("cash", value);
+                  }}
+                  value={formik.values.cash}
+                >
+                  <Select.Option key="cash1" value={true}>
+                    Да
+                  </Select.Option>
 
-                        <CloseOutlined onClick={() => remove(name)} />
-                      </Space>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        block
-                        icon={<PlusOutlined />}
-                      >
-                        Добавить ссылку
-                      </Button>
-                    </Form.Item>
-                  </>
-                )}
-              </Form.List>
+                  <Select.Option key="cash2" value={false}>
+                    Нет
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Ставка по карте"
+                validateStatus={formik.errors.stavka && "error"}
+                help={formik.errors.stavka}
+              >
+                <Input
+                  name="stavka"
+                  onChange={formik.handleChange}
+                  value={formik.values.stavka}
+                  addonAfter="%"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Введите плату сумму за обслуживание ">
+                <Input
+                  name="osblug_pay"
+                  onChange={formik.handleChange}
+                  value={formik.values.osblug_pay}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Максимальный лимит по карте"
+                validateStatus={formik.errors.limit && "error"}
+                help={formik.errors.limit}
+              >
+                <Input
+                  name="limit"
+                  onChange={formik.handleChange}
+                  value={formik.values.limit}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Плата за смс">
+                <Input
+                  name="sms_pay"
+                  onChange={formik.handleChange}
+                  value={formik.values.sms_pay}
+                  addonAfter="в/мес"
+                />
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="About"
-                label="Описание банка"
-                rules={[
-                  {
-                    required: true,
-                    message: "Необходимо описание банка",
-                  },
-                ]}
+                label="Описание карты"
+                validateStatus={formik.errors.About && "error"}
+                help={formik.errors.About}
               >
                 <Input.TextArea
                   showCount
