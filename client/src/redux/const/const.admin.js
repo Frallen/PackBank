@@ -1,0 +1,13 @@
+export const SubmitStart = "SubmitStart";
+export const SubmitEnd = "SubmitEnd";
+export const Error = "Error";
+export const Clean = "Clean";
+export const GetDataBank = "GetDataBank";
+export const GetDataDebet = "GetDataDebet";
+export const GetDataCrd = "GetDataCrd";
+export const UpdateOneBank = "UpdateOneBank";
+export const UpdateOneDebet = "UpdateOneDebet";
+export const UpdateOneCrd = "UpdateOneCrd";
+export const DeleteB = "DeleteB";
+export const DeleteD = "DeleteD";
+export const DeleteC = "DeleteCRd";

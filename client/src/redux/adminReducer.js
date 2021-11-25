@@ -1,18 +1,20 @@
 import { Admin } from "../components/Api/api";
 
-const SubmitStart = "SubmitStart";
-const SubmitEnd = "SubmitEnd";
-const Error = "Error";
-const Clean = "Clean";
-const GetDataBank = "GetDataBank";
-const GetDataDebet = "GetDataDebet";
-const GetDataCrd = "GetDataCrd";
-const UpdateOneBank = "UpdateOneBank";
-const UpdateOneDebet = "UpdateOneDebet";
-const UpdateOneCrd = "UpdateOneCrd";
-const DeleteB = "DeleteB";
-const DeleteD = "DeleteD";
-const DeleteC = "DeleteCRd";
+import {
+  SubmitStart,
+  SubmitEnd,
+  Error,
+  Clean,
+  GetDataBank,
+  GetDataDebet,
+  GetDataCrd,
+  UpdateOneBank,
+  UpdateOneDebet,
+  UpdateOneCrd,
+  DeleteB,
+  DeleteD,
+  DeleteC,
+} from "./const/const.admin";
 
 let initialValues = {
   loading: false,
@@ -252,7 +254,7 @@ export const UpdateCreditCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.UpdateCreditCrd(data);
-    dispatch({ type: SubmitEnd,});
+    dispatch({ type: SubmitEnd });
     dispatch({ type: UpdateOneCrd, data: snap.data });
   } catch (err) {
     dispatch({ type: Error, error: err.message });
