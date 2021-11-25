@@ -255,11 +255,20 @@ router.patch("/admin/bank/update/:id", async (req, res) => {
   try {
     const { name_bank, license, url, phone_number, url_images, About } =
       req.body;
-    const upd = { name_bank, license, url, phone_number, url_images, About };
     const id = req.params.id;
+    const upd = {
+      name_bank,
+      license,
+      url,
+      phone_number,
+      url_images,
+      About,
+    };
+
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`Такого банка не сущесвует`);
     let snap = await Bank.findByIdAndUpdate(id, upd, { new: true });
+
     res.status(201).json(snap);
   } catch (err) {
     return res.status(500).json({ message: err.message });

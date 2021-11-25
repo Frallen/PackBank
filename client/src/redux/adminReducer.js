@@ -8,7 +8,8 @@ const GetDataBank = "GetDataBank";
 const GetDataDebet = "GetDataDebet";
 const GetDataCrd = "GetDataCrd";
 const UpdateOneBank = "UpdateOneBank";
-
+const UpdateOneDebet = "UpdateOneDebet";
+const UpdateOneCrd = "UpdateOneCrd";
 const DeleteB = "DeleteB";
 const DeleteD = "DeleteD";
 const DeleteC = "DeleteCRd";
@@ -58,34 +59,23 @@ const AdminReducer = (state = initialValues, action) => {
     case UpdateOneBank:
       return {
         ...state,
-      /*  data: action.data.reduce((items) => {
-          let val = state.data.filter((item) => item._id === items._id);
-
-          val[0].name_bank = action.data.name_bank;
-          val[0].url = action.data.url;
-          val[0].license = action.data.license;
-          val[0].phone_number = action.data.phone_number;
-          val[0].url_images = action.data.url_images;
-          val[0].About = action.data.About;
-        }),*/
-        /*state.data.map(
-          (p) => Object.keys(action.data).reduce(
-            (item) =>{
-            if(item._id === p._id) {
-             
-         state.data.name_bank= p.name_bank,
-             state.data.url= p.url,
-             state.data.license= p.license,
-             state.data.phone_number= p.phone_number,
-             state.data.url_images= p.url_images,
-             state.data.About= p.About
-           
-            }
-          }
-        ),)*/
-        //  data: action.data.map((p) =>action.data.filter((item)=>item._id===p._id) p._id === state.data.filter((item) => item._id === action.data._id)),
-
-        //  data: Object.keys(action.data).reduce((p) => p._id === state.data.filter((item) => item._id === action.data._id)),
+        data: state.data.map((p) =>
+          p._id === action.data._id ? action.data : p
+        ),
+      };
+    case UpdateOneDebet:
+      return {
+        ...state,
+        dataDebet: state.dataDebet.map((p) =>
+          p._id === action.data._id ? action.data : p
+        ),
+      };
+    case UpdateOneCrd:
+      return {
+        ...state,
+        dataCreditCard: state.dataCreditCard.map((p) =>
+          p._id === action.data._id ? action.data : p
+        ),
       };
 
     //удалить банк
@@ -214,7 +204,8 @@ export const UpdateDebetCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.UpdateDebet(data);
-    dispatch({ dispatch: SubmitEnd, dataDebet: snap });
+    dispatch({ type: SubmitEnd });
+    dispatch({ type: UpdateOneDebet, data: snap.data });
   } catch (err) {
     dispatch({ type: Error, error: err.message });
   }
@@ -232,7 +223,6 @@ export const DeleteDebet = (id) => async (dispatch) => {
     dispatch({ type: Error, error: err.message });
   }
 };
-
 
 //получить кредитные карты
 export const GetCreditCards = () => async (dispatch) => {
@@ -262,7 +252,8 @@ export const UpdateCreditCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.UpdateCreditCrd(data);
-    dispatch({ dispatch: SubmitEnd, dataCreditCard: snap });
+    dispatch({ type: SubmitEnd,});
+    dispatch({ type: UpdateOneCrd, data: snap.data });
   } catch (err) {
     dispatch({ type: Error, error: err.message });
   }
