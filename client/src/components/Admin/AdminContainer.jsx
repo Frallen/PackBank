@@ -14,6 +14,7 @@ import {
   DeleteDebet,
   UpadteBank,
   UpdateDebetCard,
+  Clear,
 } from "./../../redux/adminReducer";
 
 const AdminCont = (props) => {
@@ -52,15 +53,21 @@ const AdminCont = (props) => {
   };
 
   let CreateCreditCard = (data) => {
+    //создать кредитную карту
     props.CreateCreditCard(data);
   };
   let UpdateCreditCard = (data) => {
+    //обновить кредитную карту
     props.UpdateCreditCard(data);
   };
   let DeleteCreditCard = (data) => {
+    //удалить кредитную карту
     props.DeleteCreditCard(data);
   };
-
+  //очистить state
+  let Clear = () => {
+    props.Clear();
+  };
   return (
     <Admin
       CreateCreditCard={CreateCreditCard}
@@ -72,6 +79,7 @@ const AdminCont = (props) => {
       CreateDebetCard={CreateDebetCard}
       UpdateDebetCard={UpdateDebetCard}
       DeleteDebet={DeleteDebet}
+      Clear={Clear}
       {...props}
     ></Admin>
   );
@@ -79,6 +87,7 @@ const AdminCont = (props) => {
 
 let MapState = (state) => {
   return {
+    status: state.admin.status,
     data: state.admin.data,
     dataDebet: state.admin.dataDebet,
     succ: state.admin.succ,
@@ -100,4 +109,5 @@ export default connect(MapState, {
   GetCreditCards,
   UpdateCreditCard,
   DeleteCreditCard,
+  Clear,
 })(AdminCont);

@@ -30,7 +30,7 @@ let Admin = (props) => {
   return (
     <div className={clas.Main}>
       <Menu
-        style={{ width: 256 }}
+        style={{ width: 224 }}
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
         mode="inline"

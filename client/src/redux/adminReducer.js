@@ -20,6 +20,7 @@ let initialValues = {
   loading: false,
   error: null,
   succ: false,
+  status: null,
   data: [],
   dataDebet: [],
   dataCreditCard: [],
@@ -38,6 +39,7 @@ const AdminReducer = (state = initialValues, action) => {
         error: null,
         loading: false,
         succ: true,
+        status: action.status,
       };
     //Получить все банки
     case GetDataBank:
@@ -87,6 +89,10 @@ const AdminReducer = (state = initialValues, action) => {
         //  фильтрую массив,   возвращаю те элементы которые не равны удалленному id
         //беру имеющиеся данные банка, проверяю каждый элемент и возвращаю те которые не равны удаленному id
         data: state.data.filter((item) => item._id !== action.id),
+        dataDebet: state.dataDebet.filter((item) => item.id_bank !== action.id),
+        dataCreditCard: state.dataCreditCard.filter(
+          (item) => item.id_bank !== action.id
+        ),
       };
     //удалить дебет
     case DeleteD:
@@ -111,12 +117,13 @@ const AdminReducer = (state = initialValues, action) => {
         ...state,
         error: action.error,
         loading: false,
+        status: action.status,
       };
     case Clean: {
       return {
         ...state,
         succ: false,
-        data: null,
+        status: null,
       };
     }
     default:
@@ -133,11 +140,11 @@ export const CreateBank = (data) => async (dispatch) => {
   try {
     let snap = await Admin.NewBank(data);
 
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     //получаю банк в виде объекта
     dispatch({ type: GetDataBank, data: snap.data.bank });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 
@@ -159,11 +166,11 @@ export const UpadteBank = (data) => async (dispatch) => {
   try {
     let snap = await Admin.UpdateBank(data);
 
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
 
     dispatch({ type: UpdateOneBank, data: snap.data });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 //удалить банк
@@ -172,10 +179,10 @@ export const DeleteBank = (id) => async (dispatch) => {
   try {
     let snap = await Admin.DeleteBank(id);
 
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: DeleteB, id: snap.data.id });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 //получить дебетовые карты
@@ -194,10 +201,10 @@ export const CreateDebetCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.CreateDebet(data);
-    dispatch({ type: SubmitEnd, succ: true });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: GetDataDebet, dataDebet: snap.data.card });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 //обновить дебетовую карту
@@ -206,10 +213,10 @@ export const UpdateDebetCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.UpdateDebet(data);
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: UpdateOneDebet, data: snap.data });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 
@@ -219,10 +226,10 @@ export const DeleteDebet = (id) => async (dispatch) => {
   try {
     let snap = await Admin.DeleteDebet(id);
 
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: DeleteD, id: snap.data.id });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 
@@ -242,10 +249,10 @@ export const CreateCreditCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.CreateCreditCard(data);
-    dispatch({ type: SubmitEnd, succ: true });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: GetDataCrd, dataCreditCard: snap.data.cardcrd });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 //обновить кредитную карту
@@ -254,10 +261,10 @@ export const UpdateCreditCard = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
     let snap = await Admin.UpdateCreditCrd(data);
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: UpdateOneCrd, data: snap.data });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };
 
@@ -267,9 +274,9 @@ export const DeleteCreditCard = (id) => async (dispatch) => {
   try {
     let snap = await Admin.DeleteCreditCrd(id);
 
-    dispatch({ type: SubmitEnd });
+    dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: DeleteC, id: snap.data.id });
   } catch (err) {
-    dispatch({ type: Error, error: err.message });
+    dispatch({ type: Error, error: err.message, status: err.response.status });
   }
 };

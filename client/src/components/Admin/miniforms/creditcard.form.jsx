@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import {
   Drawer,
@@ -11,6 +11,7 @@ import {
   Table,
   Modal,
   Select,
+  message,
 } from "antd";
 import * as Yup from "yup";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
@@ -20,6 +21,22 @@ const { confirm } = Modal;
 const { Option } = Select;
 
 const CreditCardForm = (props) => {
+  //Уведомления
+  useEffect(() => {
+    if (props.status === 201) {
+      message.success("Операция выполнена успешно");
+    }
+    if (props.status === 500) {
+      message.error("Что-то пошло не так");
+    }
+
+    if (props.status === 400) {
+      message.error("Банк с такой лицензией уже сущесвует");
+    }
+    //чищу стейт
+    props.Clear();
+  }, [props.status]);
+
   const [form] = Form.useForm();
   //стейт скрыть и показывать форму
   const [isShowBank, setShowBank1] = useState(false);

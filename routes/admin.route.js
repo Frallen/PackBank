@@ -296,6 +296,8 @@ router.delete(
         return res.status(404).send(`Такого банка не сущесвует`);
 
       await Bank.findByIdAndDelete(id);
+      await CreditCrd.findOneAndDelete(id);
+      await Debet.findOneAndDelete(id);
 
       res.status(201).json({ id });
     } catch (err) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   Drawer,
@@ -11,6 +11,7 @@ import {
   Table,
   Modal,
   Select,
+  message,
 } from "antd";
 import * as Yup from "yup";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
@@ -20,12 +21,28 @@ const { confirm } = Modal;
 const { Option } = Select;
 
 const DebetCardForm = (props) => {
+  //Уведомления
+  useEffect(() => {
+    if (props.status === 201) {
+      message.success("Операция выполнена успешно");
+    }
+    if (props.status === 500) {
+      message.error("Что-то пошло не так");
+    }
+
+    if (props.status === 404) {
+      message.error("Такого банка не сущесвует");
+    }
+    //чищу стейт
+    props.Clear();
+  }, [props.status]);
+
   const [form] = Form.useForm();
   //стейт скрыть и показывать форму
   const [isShowBank, setShowBank1] = useState(false);
   const [idbank, setUpdId] = useState("");
-  
-//валидация полей лиценции и номера телефона
+
+  //валидация полей лиценции и номера телефона
   const DebetShema = Yup.object().shape({
     id_bank: Yup.string().required("Это обязательное поле"),
     name_card: Yup.string().required("Это обязательное поле"),
