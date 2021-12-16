@@ -241,8 +241,8 @@ const BankForm = (props) => {
                   name="license"
                   onChange={formik.handleChange}
                   value={formik.values.license}
-                  maxLength="13"
-                  minLength="13"
+                  maxLength="9"
+                  minLength="9"
                 />
               </Form.Item>
             </Col>

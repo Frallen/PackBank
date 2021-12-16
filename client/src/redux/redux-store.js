@@ -2,10 +2,12 @@ import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
 import AdminReducer from "./adminReducer";
 import AuthReducer from "./authReducer";
+import MainReducer from "./MainReducer";
 
 let reducers = combineReducers({
   auth: AuthReducer,
   admin: AdminReducer,
+  main: MainReducer,
 });
 
 // ДЛЯ РАСШИРЕНИЯ В ХРОМЕ

@@ -1,40 +1,31 @@
+.Preloader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 91vh;
+}
+
 .Main {
-  margin: 2em 15vw;
-  .blockcards {
+  margin: 2em 5vw;
+  .card_block {
     .card {
       box-shadow: 0 0px 5px 0px #000;
       border-radius: 1rem;
-      margin: 0 auto;
-      margin-bottom: 1em;
       padding: 1em;
-      max-width: 45vw;
-      @media (max-width: 1240px) {
-        max-width: max-content;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .card_img {
+        flex: 40%;
       }
-      .cardshortinfo {
-        display: flex;
-        justify-content: space-evenly;
-        @media (max-width: 1240px) {
+      .card_info {
+        margin-left: 1em;
+        flex-basis: 60%;
+        .card_info_atribut {
+          display: flex;
           flex-direction: column;
-        }
-        .logocardbox {
-          width: 270px;
-          flex-shrink: 0;
-          @media (max-width:1240px) {
-              width:100%;
-          }
-          .logocardbox_item {
-            display: block;
-            max-width: 100%;
-            height: auto;
-          }
-        }
-        .info {
-          flex-basis: 43%;
-          .smallinfo {
-            list-style-type: none;
-            .smallinfo_item {
-            }
+          list-style-type: none;
+          .card_info_atribut_item {
           }
         }
       }

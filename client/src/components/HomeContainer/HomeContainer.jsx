@@ -1,9 +1,8 @@
 import React from "react"
+import Home from "./home"
 
 let HomeContainer=()=>{
-    return <div>
-
-    </div>
+    return <Home></Home>
 }
 
 export default HomeContainer

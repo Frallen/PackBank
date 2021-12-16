@@ -1,0 +1,41 @@
+$white: #fff;
+.Main {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+
+  .blocktext {
+    color: $white;
+    z-index: 99;
+    margin: 22vh auto;
+    .Title {
+      font-size: 7em;
+      margin: 0;
+      color: #fff;
+      @media (max-width: 400px) {
+        font-size: 5em;
+      }
+    }
+    .suptitle {
+      font-size: 2em;
+      @media (max-width: 400px) {
+        font-size: 1.4em;
+      }
+    }
+    .Text {
+      font-size: 1.5em;
+      max-width: fit-content;
+    }
+  }
+  .blockVideo {
+    width: 100%;
+    height: 91vh;
+    object-fit: cover;
+    position: absolute;
+    top: 0px;
+    @media (max-width: 880px) {
+      height: 100%;
+    }
+  }
+}
