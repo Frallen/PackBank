@@ -15,7 +15,7 @@ let DebitCont = (props) => {
 
   useEffect(() => {
     //
-
+    props.CleanAllData();
     props.GetBank();
     props.GetDebetCards();
     // eslint-disable-next-line react-hooks/exhaustive-deps

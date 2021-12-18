@@ -40,18 +40,18 @@ const MainReducer = (state = initialstate, action) => {
       //в имеющися массив data(будь он пустой или нет)
       // копирую новый пришедший массив/объект и создаю новый
       // получается в массив data засовываю новые данные
-      return { ...state, data: state.data.concat(action.data) };
+      return { ...state, data: action.data };
     //Получить все дебетовые карты
     case GetDataDebet:
       return {
         ...state,
-        dataDebet: state.dataDebet.concat(action.dataDebet),
+        dataDebet: action.dataDebet,
       };
     //Получить все кредитные карты
     case GetDataCrd:
       return {
         ...state,
-        dataCreditCard: state.dataCreditCard.concat(action.dataCreditCard),
+        dataCreditCard: action.dataCreditCard,
       };
     case Clean:
       return {

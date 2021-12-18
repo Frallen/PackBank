@@ -470,7 +470,7 @@ const CreditCardForm = (props) => {
                 block
                 disabled={props.loading}
               >
-                Добавить банк
+                Добавить карту
               </Button>
             </Col>
             <Col span={12}>

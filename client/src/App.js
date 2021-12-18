@@ -12,6 +12,7 @@ import SettCont from "./components/Settings/SettCont";
 import Logout from "./components/auth/logout/logout";
 import AdminContainer from "./components/Admin/AdminContainer";
 import AdminAuthCont from "./components/Admin/Auth/AdminAuthCont";
+import CreditCardCont from "./components/creditcard/credit_card_container";
 
 const App = (props) => {
   return (
@@ -39,7 +40,9 @@ const App = (props) => {
               <Route path="/debit">
                 <DebitContainer></DebitContainer>
               </Route>
-              <Route path="/credit"></Route>
+              <Route path="/credit-card">
+                <CreditCardCont></CreditCardCont>
+              </Route>
               <Route path="/zaim"></Route>
               <Route path="/settings">
                 <SettCont></SettCont>
@@ -58,7 +61,9 @@ const App = (props) => {
               <Route path="/debit">
                 <DebitContainer></DebitContainer>
               </Route>
-              <Route path="/credit"></Route>
+              <Route path="/credit-card">
+                <CreditCardCont></CreditCardCont>
+              </Route>
               <Route path="/zaim"></Route>
               <Route path="/login">
                 <AuthContainer></AuthContainer>

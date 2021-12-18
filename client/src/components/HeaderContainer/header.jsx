@@ -56,7 +56,7 @@ const menu = (
       <NavLink to="/debit">Дебетовые</NavLink>
     </Menu.Item>
     <Menu.Item key="2">
-      <NavLink to="/credit">Кредитные</NavLink>
+      <NavLink to="/credit-card">Кредитные</NavLink>
     </Menu.Item>
   </Menu>
 );
