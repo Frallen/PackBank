@@ -1,74 +1,75 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import clas from "./header.module.scss";
-import { Button, Dropdown, Menu } from "antd";
+import { Drawer, Col, Row } from "antd";
 
 let Header = (props) => {
   const [isActive, setActive] = useState(false);
-
-  const isMobile = () => {
-    !isActive ? setActive(true) : setActive(false);
-  };
-
+  let route = useLocation();
+  //при переходе на другую страницу закрываю меню навигации
+  useEffect(() => {
+    setActive(false);
+  }, [route]);
   return (
     <div className={clas.Main}>
-      <h1 className={clas.Logo}>
-        <NavLink to="/">Shape.ru</NavLink>
-      </h1>
-      <ul className={isActive ? clas.activeMobile : clas.mainMenu}>
-        <NavLink to="/" className={clas.mainMenu__item}>
-          <Button shape="round"> Главная</Button>
-        </NavLink>
-        <NavLink to="/news" className={clas.mainMenu__item}>
-          <Button shape="round"> Новости</Button>
-        </NavLink>
-        <Dropdown overlay={menu} shape="round" className={clas.mainMenu__item}>
-          <Button>Карты</Button>
-        </Dropdown>
-        <NavLink to="/zaim" className={clas.mainMenu__item}>
-          <Button shape="round">Займы</Button>
-        </NavLink>
+      <NavLink to="/" className={clas.Logo}>
+        Shape.ru
+      </NavLink>
 
-        {props.isAuth ? (
-          <AuthRoutesLinks></AuthRoutesLinks>
-        ) : (
-          <NavLink to="/login" className={clas.mainMenu__item}>
-            <Button type="primary" shape="round">
-              Войти
-            </Button>
-          </NavLink>
-        )}
-      </ul>
-      <label htmlFor="toggle" onClick={isMobile} className={clas.hamburgerbox}>
-        <span
-          className={
-            clas.hamburger + " " + (isActive ? clas.activehamburger : "")
-          }
-        ></span>
-      </label>
+      <Drawer
+        placement="top"
+        closable={true}
+        onClose={() => setActive(false)}
+        visible={isActive}
+        key="top"
+      >
+        <Row gutter={1}>
+          <Col span={5}>
+            <NavLink to="/" className={clas.Draweritem}>
+              Главная
+            </NavLink>
+          </Col>
+          <Col span={5}>
+            <NavLink to="/news" className={clas.Draweritem}>
+              Новости
+            </NavLink>
+          </Col>
+          <Col span={5}>
+            <NavLink to="/debit" className={clas.Draweritem}>
+              Дебетовые карты
+            </NavLink>
+          </Col>
+          <Col span={5}>
+            <NavLink to="/credit-card" className={clas.Draweritem}>
+              Кредитные карты
+            </NavLink>
+          </Col>
+          <Col span={5}>
+            <NavLink to="/zaim" className={clas.Draweritem}>
+              Займы
+            </NavLink>
+          </Col>
+        </Row>
+      </Drawer>
+
+      <div onClick={() => setActive(true)} className={clas.Draweritem}>
+        Посмотреть предложения
+      </div>
+      <NavLink to="/login" className={clas.Draweritem}>
+        Войти
+      </NavLink>
     </div>
   );
 };
-// дропдаун меню
-const menu = (
-  <Menu>
-    <Menu.Item key="1">
-      <NavLink to="/debit">Дебетовые</NavLink>
-    </Menu.Item>
-    <Menu.Item key="2">
-      <NavLink to="/credit-card">Кредитные</NavLink>
-    </Menu.Item>
-  </Menu>
-);
 
 const AuthRoutesLinks = () => {
   return (
     <div>
       <NavLink to="/settings" className={clas.mainMenu__item}>
-        <Button shape="round">Настройки</Button>
+        Настройки
       </NavLink>
       <NavLink to="/logout" className={clas.mainMenu__item}>
-        <Button shape="round">Выйти</Button>
+        Выйти
       </NavLink>
     </div>
   );
