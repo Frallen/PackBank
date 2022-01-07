@@ -2,7 +2,7 @@ import { Button, Checkbox, Col, Row, Select } from "antd";
 import React from "react";
 import clas from "./debit.module.scss";
 import { Collapse } from "antd";
-
+import { NavLink } from "react-router-dom";
 import { Form } from "antd";
 import { useFormik } from "formik";
 
@@ -129,56 +129,57 @@ let Debit = (props) => {
       </Collapse>
       <div className={clas.card_block}>
         {props.dataDebet.map((i) => (
-          <div className={clas.card}>
+          <div className={clas.card} key={i._id}>
             <div className={clas.card_img}>
-              <img src={i.url_images} key={i.id} alt="" />
+              <img src={i.url_images}  alt="" />
             </div>
             <div className={clas.card_info}>
-              <h3>{i.name_card}</h3>
               <ul className={clas.card_info_atribut}>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <h3>{i.name_card}</h3>
+                <li className={clas.card_info_atribut_item} >
                   Банк:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.name_bank}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Срок выпуска:
                   <span className={clas.card_info_atribut_item_spec}>
-                    {i.srok+" лет"} 
+                    {i.srok + " лет"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Платежная система:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.pay_system}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Плата за смс:
                   <span className={clas.card_info_atribut_item_spec}>
-                    {i.sms_pay=== "Нет" ? "Нет" :i.sms_pay+" в мес"} 
+                    {i.sms_pay === "Нет" ? "Нет" : i.sms_pay + "р. в мес"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Остаток по карте:
                   <span className={clas.card_info_atribut_item_spec}>
-                    {i.ostatok=== "Нет" ? "Нет" :i.ostatok+"%"} 
+                    {i.ostatok === "Нет" ? "Нет" : i.ostatok + "%"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Кешбек:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.cashback === "Нет" ? "Нет" : i.cashback + "%"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item} >
                   Плата за обслуживание:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.osblug_pay === "Нет" ? "Нет" : i.osblug_pay + " в мес."}
                   </span>
                 </li>
               </ul>
+              <NavLink to={`/debit/${i._id}`} className={clas.showMore}>Подробнее</NavLink>
             </div>
           </div>
         ))}

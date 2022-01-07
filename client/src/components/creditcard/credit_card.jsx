@@ -5,6 +5,7 @@ import { Collapse } from "antd";
 
 import { Form } from "antd";
 import { useFormik } from "formik";
+import { NavLink } from "react-router-dom";
 
 let Credit_card = (props) => {
   const [form] = Form.useForm();
@@ -136,68 +137,71 @@ let Credit_card = (props) => {
       </Collapse>
       <div className={clas.card_block}>
         {props.dataCreditCard.map((i) => (
-          <div className={clas.card}>
+          <div className={clas.card} key={i._id}>
             <div className={clas.card_img}>
-              <img src={i.url_images} key={i.id} alt="" />
+              <img src={i.url_images} alt="" />
             </div>
             <div className={clas.card_info}>
-              <h3>{i.name_card}</h3>
               <ul className={clas.card_info_atribut}>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <h3>{i.name_card}</h3>
+                <li className={clas.card_info_atribut_item}>
                   Банк:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.name_bank}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Срок выпуска:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.srok + " лет"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Платежная система:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.pay_system}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Для снятия наличных:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.cash === true ? "Да" : "Нет"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Ставка по карте:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.stavka + "%"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Лимит:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.limit}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Льготный период:
                   <span className={clas.card_info_atribut_item_spec}>
-                    {i.dayzToPay+"дней"}
+                    {i.dayzToPay + "дней"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Плата за смс:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.sms_pay === "Нет" ? "Нет" : i.sms_pay + " в мес"}
                   </span>
                 </li>
-                <li className={clas.card_info_atribut_item} key={i.id}>
+                <li className={clas.card_info_atribut_item}>
                   Плата за обслуживание:
                   <span className={clas.card_info_atribut_item_spec}>
                     {i.osblug_pay === "Нет" ? "Нет" : i.osblug_pay + " в мес."}
                   </span>
                 </li>
               </ul>
+              <NavLink to={`/debit/${i._id}`} className={clas.showMore}>
+                Подробнее
+              </NavLink>
             </div>
           </div>
         ))}
