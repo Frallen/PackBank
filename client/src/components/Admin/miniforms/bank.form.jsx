@@ -16,9 +16,9 @@ import * as Yup from "yup";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import clas from "./../admin.module.scss";
 //антд
-const { confirm } = Modal;
 
 const BankForm = (props) => {
+  const { confirm } = Modal;
   //Уведомления
   useEffect(() => {
     if (props.status === 201) {

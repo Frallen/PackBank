@@ -1,3 +1,6 @@
+export const GetDataNews = "GetDataNews";
+export const UpdateOneNews = "UpdateOneNews";
+export const DeleteN = "DeleteN";
 export const SubmitStart = "SubmitStart";
 export const SubmitEnd = "SubmitEnd";
 export const Error = "Error";

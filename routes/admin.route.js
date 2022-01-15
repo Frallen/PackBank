@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const News = require("./../models/news");
 const Bank = require("./../models/bank");
 const CreditCrd = require("./../models/creditcard");
 const Debet = require("../models/debet");
@@ -305,5 +306,79 @@ router.delete(
     }
   }
 );
+
+//получить все новости
+router.get("/admin/news/get", async (req, res) => {
+  try {
+    const getNews = await News.find();
+    res.status(201).json(getNews);
+  } catch (err) {
+    return res.status(500).json({ message: "Что-то пошло не так" });
+  }
+});
+// создать дебетовую карту
+router.post("/admin/news/create", async (req, res) => {
+  try {
+    const { Title, Text, Date, url_images } = req.body;
+    const news = new News({
+      Title: Title,
+      Text: Text,
+      Date: Date,
+      url_images: url_images,
+    });
+
+    await news.save();
+
+    res.status(201).json({ news });
+  } catch (err) {
+    return res.status(500).json({ message: "Что-то пошло не так" });
+  }
+});
+//удалить новость
+router.delete(
+  "/admin/news/delete/:id",
+  //по url id и удаляю
+  async (req, res) => {
+    try {
+      //беру id банка из url
+      const { id } = req.params;
+      //чекаю сущесвует ли такой объект в бд
+      if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(404).send(`Такой новости не сущесвует`);
+
+      await News.findByIdAndDelete(id);
+
+      res.status(201).json({ id });
+    } catch (err) {
+      return res.status(500).json({ message: "Что-то пошло не так." });
+    }
+  }
+);
+//обновить новость
+router.patch("/admin/news/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      id_news,
+      Title,
+      Text,
+      Date,
+      url_images,
+    } = req.body;
+    const upd = {
+      id_news,
+      Title,
+      Text,
+      Date,
+      url_images,
+    };
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`Такого банка не сущесвует`);
+    let data = await News.findByIdAndUpdate(id, upd, { new: true });
+    res.status(201).json(data);
+  } catch (err) {
+    return res.status(err.message);
+  }
+});
 
 module.exports = router;

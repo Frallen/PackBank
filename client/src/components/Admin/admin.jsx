@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import clas from "./admin.module.scss";
 import { Menu } from "antd";
-import { BankOutlined, CreditCardOutlined } from "@ant-design/icons";
+import {
+  BankOutlined,
+  CreditCardOutlined,
+  PaperClipOutlined,
+} from "@ant-design/icons";
 import BankForm from "./miniforms/bank.form";
 import { NavLink } from "react-router-dom";
 import DebetCardForm from "./miniforms/debetcard.form";
 import CreditCardForm from "./miniforms/creditcard.form";
+import CreateNews from "./miniforms/CreateNews";
 
 //хз зачем хуйня антд
 const { SubMenu } = Menu;
@@ -22,6 +27,8 @@ let Admin = (props) => {
         return <DebetCardForm {...props}></DebetCardForm>;
       case 3:
         return <CreditCardForm {...props}></CreditCardForm>;
+      case 4:
+        return <CreateNews {...props}></CreateNews>;
       default:
         return <div></div>;
     }
@@ -62,6 +69,11 @@ let Admin = (props) => {
               Список кредитных
             </Menu.Item>
           </Menu.ItemGroup>
+        </SubMenu>
+        <SubMenu key="a11" icon={<PaperClipOutlined />} title="Новости">
+          <Menu.Item key="a12" onClick={() => setShow(4)}>
+            Список новостей
+          </Menu.Item>
         </SubMenu>
       </Menu>
 
