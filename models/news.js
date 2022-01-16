@@ -10,7 +10,7 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  url_images: {
+  title_image: {
     type: String,
     required: true,
   },

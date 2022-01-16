@@ -316,15 +316,15 @@ router.get("/admin/news/get", async (req, res) => {
     return res.status(500).json({ message: "Что-то пошло не так" });
   }
 });
-// создать дебетовую карту
+// создать новость
 router.post("/admin/news/create", async (req, res) => {
   try {
-    const { Title, Text, Date, url_images } = req.body;
+    const { Title, Text, Date, title_image } = req.body;
     const news = new News({
       Title: Title,
       Text: Text,
       Date: Date,
-      url_images: url_images,
+      title_image: title_image,
     });
 
     await news.save();
@@ -358,13 +358,7 @@ router.delete(
 router.patch("/admin/news/update/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      id_news,
-      Title,
-      Text,
-      Date,
-      url_images,
-    } = req.body;
+    const { id_news, Title, Text, Date, url_images } = req.body;
     const upd = {
       id_news,
       Title,

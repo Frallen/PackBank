@@ -403,7 +403,7 @@ const DebetCardForm = (props) => {
             </Col>
             <Col span={12}>
               <Button block onClick={() => setShowBank1(false)}>
-                Cancel
+                Отменить
               </Button>
             </Col>
           </Row>

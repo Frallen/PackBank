@@ -14,6 +14,10 @@ import {
   DeleteDebet,
   UpadteBank,
   UpdateDebetCard,
+  GetNews,
+  CreateNews,
+  UpdateNews,
+  DeleteNews,
   Clear,
 } from "./../../redux/adminReducer";
 
@@ -24,6 +28,7 @@ const AdminCont = (props) => {
     props.GetBank();
     props.GetDebetCards();
     props.GetCreditCards();
+    props.GetNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [succ]);
 
@@ -64,12 +69,29 @@ const AdminCont = (props) => {
     //удалить кредитную карту
     props.DeleteCreditCard(data);
   };
+
+  let CreateNews = (data) => {
+    //создать кредитную карту
+    props.CreateNews(data);
+  };
+  let UpdateNews = (data) => {
+    //обновить кредитную карту
+    props.UpdateNews(data);
+  };
+  let DeleteNews = (data) => {
+    //удалить кредитную карту
+    props.DeleteNews(data);
+  };
+
   //очистить state
   let Clear = () => {
     props.Clear();
   };
   return (
     <Admin
+      CreateNews={CreateNews}
+      UpdateNews={UpdateNews}
+      DeleteNews={DeleteNews}
       CreateCreditCard={CreateCreditCard}
       UpdateCreditCard={UpdateCreditCard}
       DeleteCreditCard={DeleteCreditCard}
@@ -93,6 +115,7 @@ let MapState = (state) => {
     succ: state.admin.succ,
     loading: state.admin.loading,
     dataCreditCard: state.admin.dataCreditCard,
+    DataNews: state.admin.DataNews,
   };
 };
 
@@ -109,5 +132,9 @@ export default connect(MapState, {
   GetCreditCards,
   UpdateCreditCard,
   DeleteCreditCard,
+  GetNews,
+  CreateNews,
+  UpdateNews,
+  DeleteNews,
   Clear,
 })(AdminCont);

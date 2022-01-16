@@ -14,6 +14,9 @@ import {
   DeleteB,
   DeleteD,
   DeleteC,
+  GetDataNews,
+  UpdateOneNews,
+  DeleteN,
 } from "./const/const.admin";
 
 let initialValues = {
@@ -24,6 +27,7 @@ let initialValues = {
   data: [],
   dataDebet: [],
   dataCreditCard: [],
+  DataNews: [],
 };
 
 const AdminReducer = (state = initialValues, action) => {
@@ -41,6 +45,8 @@ const AdminReducer = (state = initialValues, action) => {
         succ: true,
         status: action.status,
       };
+    case GetDataNews:
+      return { ...state, DataNews: state.DataNews.concat(action.DataNews) };
     //Получить все банки
     case GetDataBank:
       //в имеющися массив data(будь он пустой или нет)
@@ -58,6 +64,13 @@ const AdminReducer = (state = initialValues, action) => {
       return {
         ...state,
         dataCreditCard: state.dataCreditCard.concat(action.dataCreditCard),
+      };
+    case UpdateOneNews:
+      return {
+        ...state,
+        DataNews: state.DataNews.map((p) =>
+          p._id === action.DataNews._id ? action.DataNews : p
+        ),
       };
 
     case UpdateOneBank:
@@ -80,6 +93,15 @@ const AdminReducer = (state = initialValues, action) => {
         dataCreditCard: state.dataCreditCard.map((p) =>
           p._id === action.data._id ? action.data : p
         ),
+      };
+
+       //удалить новости
+    case DeleteN:
+      return {
+        ...state,
+        //  фильтрую массив,   возвращаю те элементы которые не равны удалленному id
+        //беру имеющиеся данные банка, проверяю каждый элемент и возвращаю те которые не равны удаленному id
+        DataNews: state.dataDataNewsDebet.filter((item) => item._id !== action.id),
       };
 
     //удалить банк
@@ -276,6 +298,58 @@ export const DeleteCreditCard = (id) => async (dispatch) => {
 
     dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: DeleteC, id: snap.data.id });
+  } catch (err) {
+    dispatch({ type: Error, error: err.message, status: err.response.status });
+  }
+};
+
+
+
+
+
+//получить дебетовые карты
+export const GetNews = () => async (dispatch) => {
+  dispatch({ type: SubmitStart });
+  try {
+    let snap = await Admin.GetALLDebet();
+    dispatch({ type: SubmitEnd });
+    dispatch({ type: GetDataNews, DataNews: snap.DataNews });
+  } catch (err) {
+    dispatch({ type: Error, error: err.message });
+  }
+};
+//создать дебетовую карту
+export const CreateNews = (data) => async (dispatch) => {
+  dispatch({ type: SubmitStart });
+  try {
+    let snap = await Admin.CreateNews(data);
+    dispatch({ type: SubmitEnd, status: snap.status });
+    dispatch({ type: GetDataNews, DataNews: snap.data.news });
+  } catch (err) {
+    dispatch({ type: Error, error: err.message, status: err.response.status });
+  }
+};
+//обновить дебетовую карту
+
+export const UpdateNews = (data) => async (dispatch) => {
+  dispatch({ type: SubmitStart });
+  try {
+    let snap = await Admin.UpdateDebet(data);
+    dispatch({ type: SubmitEnd, status: snap.status });
+    dispatch({ type: UpdateOneNews, data: snap.data });
+  } catch (err) {
+    dispatch({ type: Error, error: err.message, status: err.response.status });
+  }
+};
+
+//удалить дебетовую карту
+export const DeleteNews = (id) => async (dispatch) => {
+  dispatch({ type: SubmitStart });
+  try {
+    let snap = await Admin.DeleteNews(id);
+
+    dispatch({ type: SubmitEnd, status: snap.status });
+    dispatch({ type: DeleteD, id: snap.DataNews.id });
   } catch (err) {
     dispatch({ type: Error, error: err.message, status: err.response.status });
   }

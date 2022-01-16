@@ -192,12 +192,36 @@ export const Admin = {
       })
       .then((resp) => resp);
   },
+////////////////////////
 
   //получить новости
   GetNews() {
     return axios.get("/api/admin/news/get").then((resp) => resp);
   },
-  //обновить дебетовую карту
+
+//создать дебетовую карту
+CreateNews(data) {
+  return axios
+    .post(
+      "/api/admin/news/create",
+      {
+        Title:data.Title,
+        Date: data.Date,
+        title_image: data.title_image.file.thumbUrl,
+        Text: data.Text,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((resp) => resp);
+},
+
+
+
+  //обновить новости
   UpdateNews(data) {
     return axios
       .patch(
@@ -217,7 +241,7 @@ export const Admin = {
       )
       .then((resp) => resp);
   },
-  //удалить дебетовую карту
+  //удалить новость
   DeleteNews(id) {
     return axios
       .delete(`/api/admin/news/delete/${id}`, {
@@ -228,6 +252,8 @@ export const Admin = {
       .then((resp) => resp);
   },
 };
+
+/////////////////////////////////////////////////////////////////////////
 
 export const Auth = {
   //регистрация
