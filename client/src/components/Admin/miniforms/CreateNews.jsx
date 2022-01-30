@@ -22,6 +22,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import clas from "./../admin.module.scss";
+import imageToBase64 from "image-to-base64";
 
 let CreateNews = (props) => {
   const { confirm } = Modal;
@@ -50,11 +51,7 @@ let CreateNews = (props) => {
     .shape({
       Title: Yup.string().required("Это обязательное поле"),
       Date: Yup.string().required("Это обязательное поле"),
-      title_image: Yup.mixed()
-        .required("Это обязательное поле")
-        .test("fileFormat", "Только файлы формата jpg,png", (value) => {
-          return value && filetypes.includes(value.file.type);
-        }),
+
       Text: Yup.string().required("Это обязательное поле"),
     })
     .required("Загрузите");
@@ -75,8 +72,8 @@ let CreateNews = (props) => {
     validate,
     validationSchema: NewsSchema,
     onSubmit: (values) => {
-      values.idbank = idbank;
-      //отправляю данные на серв
+      values._id = idbank;
+       //отправляю данные на серв
       idbank ? props.UpdateNews(values) : props.CreateNews(values);
       setUpdId(null);
       //закрываю форму
@@ -92,13 +89,13 @@ let CreateNews = (props) => {
       title: "id",
       dataIndex: "_id",
       key: "_id",
-
+      fixed: "left",
       responsive: ["lg"],
     },
     {
       title: "Название новости",
-      dataIndex: "title",
-      key: "title",
+      dataIndex: "Title",
+      key: "Title",
       responsive: ["lg"],
     },
     {
@@ -111,7 +108,8 @@ let CreateNews = (props) => {
       title: "Изображение статьи",
       dataIndex: "title_image",
       key: "title_image",
-      responsive: ["lg"],
+      width: 100,
+      render: (title_image) => <img src={title_image}></img>,
     },
     {
       title: "Текст новости",
@@ -135,7 +133,7 @@ let CreateNews = (props) => {
   let ChangeBank = (record) => {
     setShowBank1(true);
     setUpdId(record._id);
-    formik.setFieldValue("title", record.title);
+    formik.setFieldValue("Title", record.Title);
     formik.setFieldValue("Date", record.Date);
     formik.setFieldValue("title_image", record.title_image);
     formik.setFieldValue("Text", record.Text);
@@ -155,7 +153,14 @@ let CreateNews = (props) => {
     });
   };
 
-  const filetypes = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
+  const filetypes = [
+    "image/jpg",
+    "image/jpeg",
+    "image/gif",
+    "image/png",
+    "data:image/png;base64",
+    "data:image/jpg;base64",
+  ];
 
   return (
     <div>
@@ -171,7 +176,6 @@ let CreateNews = (props) => {
         </Button>
       </div>
       <Table
-        size="large"
         columns={columns}
         dataSource={props.DataNews}
         className={clas.Table}

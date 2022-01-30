@@ -225,13 +225,12 @@ CreateNews(data) {
   UpdateNews(data) {
     return axios
       .patch(
-        `/api/admin/news/update/${data.id}`,
+        `/api/admin/news/update/${data._id}`,
         {
-          id_news: data.id_news,
           Title: data.Title,
           Text: data.Text,
           Date: data.Date,
-          url_images: data.url_images,
+          title_image: data.title_image.file.thumbUrl,
         },
         {
           headers: {

@@ -13,6 +13,7 @@ import Logout from "./components/auth/logout/logout";
 import AdminContainer from "./components/Admin/AdminContainer";
 import AdminAuthCont from "./components/Admin/Auth/AdminAuthCont";
 import CreditCardCont from "./components/creditcard/credit_card_container";
+import NewsContainer from "./components/news/NewsContainer"
 
 const App = (props) => {
   return (
@@ -57,7 +58,9 @@ const App = (props) => {
               <Route path="/admin">
                 <AdminAuthCont></AdminAuthCont>
               </Route>
-              <Route path="/news"></Route>
+              <Route path="/news">
+                <NewsContainer></NewsContainer>
+              </Route>
               <Route path="/debit">
                 <DebitContainer></DebitContainer>
               </Route>

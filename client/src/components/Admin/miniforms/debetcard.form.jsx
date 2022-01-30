@@ -122,6 +122,7 @@ const DebetCardForm = (props) => {
       title: "Изображения",
       dataIndex: "url_images",
       key: "url_images",
+      render: url_images => <img width={100} src={url_images}></img>,
       responsive: ["sm"],
     },
     {

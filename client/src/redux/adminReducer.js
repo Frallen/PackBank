@@ -69,7 +69,7 @@ const AdminReducer = (state = initialValues, action) => {
       return {
         ...state,
         DataNews: state.DataNews.map((p) =>
-          p._id === action.DataNews._id ? action.DataNews : p
+          p._id === action.data._id ? action.data : p
         ),
       };
 
@@ -95,13 +95,15 @@ const AdminReducer = (state = initialValues, action) => {
         ),
       };
 
-       //удалить новости
+    //удалить новости
     case DeleteN:
       return {
         ...state,
         //  фильтрую массив,   возвращаю те элементы которые не равны удалленному id
         //беру имеющиеся данные банка, проверяю каждый элемент и возвращаю те которые не равны удаленному id
-        DataNews: state.dataDataNewsDebet.filter((item) => item._id !== action.id),
+        DataNews: state.DataNews.filter(
+          (item) => item._id !== action.id
+        ),
       };
 
     //удалить банк
@@ -303,17 +305,13 @@ export const DeleteCreditCard = (id) => async (dispatch) => {
   }
 };
 
-
-
-
-
 //получить дебетовые карты
 export const GetNews = () => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
-    let snap = await Admin.GetALLDebet();
+    let snap = await Admin.GetNews();
     dispatch({ type: SubmitEnd });
-    dispatch({ type: GetDataNews, DataNews: snap.DataNews });
+    dispatch({ type: GetDataNews, DataNews: snap.data });
   } catch (err) {
     dispatch({ type: Error, error: err.message });
   }
@@ -334,7 +332,7 @@ export const CreateNews = (data) => async (dispatch) => {
 export const UpdateNews = (data) => async (dispatch) => {
   dispatch({ type: SubmitStart });
   try {
-    let snap = await Admin.UpdateDebet(data);
+    let snap = await Admin.UpdateNews(data);
     dispatch({ type: SubmitEnd, status: snap.status });
     dispatch({ type: UpdateOneNews, data: snap.data });
   } catch (err) {
@@ -349,7 +347,7 @@ export const DeleteNews = (id) => async (dispatch) => {
     let snap = await Admin.DeleteNews(id);
 
     dispatch({ type: SubmitEnd, status: snap.status });
-    dispatch({ type: DeleteD, id: snap.DataNews.id });
+    dispatch({ type: DeleteN, id: snap.data.id });
   } catch (err) {
     dispatch({ type: Error, error: err.message, status: err.response.status });
   }

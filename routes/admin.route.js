@@ -358,13 +358,13 @@ router.delete(
 router.patch("/admin/news/update/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { id_news, Title, Text, Date, url_images } = req.body;
+    const { Title, Text, Date, title_image } = req.body;
     const upd = {
-      id_news,
+  
       Title,
       Text,
       Date,
-      url_images,
+      title_image,
     };
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`Такого банка не сущесвует`);
