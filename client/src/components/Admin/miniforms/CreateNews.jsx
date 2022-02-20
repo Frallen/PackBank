@@ -1,7 +1,6 @@
 import {
   ExclamationCircleOutlined,
   PlusOutlined,
-  UploadOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -15,14 +14,12 @@ import {
   Row,
   Space,
   Table,
-  Upload,
 } from "antd";
 import { useFormik } from "formik";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import clas from "./../admin.module.scss";
-import imageToBase64 from "image-to-base64";
 
 let CreateNews = (props) => {
   const { confirm } = Modal;
@@ -51,10 +48,9 @@ let CreateNews = (props) => {
     .shape({
       Title: Yup.string().required("Это обязательное поле"),
       Date: Yup.string().required("Это обязательное поле"),
-
+      title_image: Yup.string().required("Это обязательное поле"),
       Text: Yup.string().required("Это обязательное поле"),
     })
-    .required("Загрузите");
   //отдельная валидация на сравнение лицензий
   const validate = (values) => {
     const errors = {};
@@ -65,7 +61,7 @@ let CreateNews = (props) => {
     initialValues: {
       Title: "",
       Date: "",
-      title_image: null,
+      title_image: "",
       Text: "",
     },
 
@@ -73,7 +69,7 @@ let CreateNews = (props) => {
     validationSchema: NewsSchema,
     onSubmit: (values) => {
       values._id = idbank;
-       //отправляю данные на серв
+      //отправляю данные на серв
       idbank ? props.UpdateNews(values) : props.CreateNews(values);
       setUpdId(null);
       //закрываю форму
@@ -109,6 +105,7 @@ let CreateNews = (props) => {
       dataIndex: "title_image",
       key: "title_image",
       width: 100,
+      height:100,
       render: (title_image) => <img src={title_image}></img>,
     },
     {
@@ -152,16 +149,6 @@ let CreateNews = (props) => {
       onCancel() {},
     });
   };
-
-  const filetypes = [
-    "image/jpg",
-    "image/jpeg",
-    "image/gif",
-    "image/png",
-    "data:image/png;base64",
-    "data:image/jpg;base64",
-  ];
-
   return (
     <div>
       <div className={clas.tableBlock_header}>
@@ -180,7 +167,6 @@ let CreateNews = (props) => {
         dataSource={props.DataNews}
         className={clas.Table}
       ></Table>
-
       <Drawer
         title="Добавить новость"
         width={720}
@@ -239,20 +225,16 @@ let CreateNews = (props) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Ссылки на изображение статьи"
+                label="Ссылка на изображение статьи"
                 validateStatus={formik.errors.title_image && "error"}
                 help={formik.errors.title_image}
               >
-                <Upload
-                  onChange={(title_image) =>
-                    formik.setFieldValue("title_image", title_image)
-                  }
-                  listType="picture"
-                  maxCount={1}
-                  accept={filetypes}
-                >
-                  <Button icon={<UploadOutlined />}>Upload</Button>
-                </Upload>
+                <Input
+                  placeholder="Ссылка "
+                  name="title_image"
+                  onChange={formik.handleChange}
+                  value={formik.values.title_image}
+                />
               </Form.Item>
             </Col>
           </Row>

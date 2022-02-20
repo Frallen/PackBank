@@ -207,7 +207,7 @@ CreateNews(data) {
       {
         Title:data.Title,
         Date: data.Date,
-        title_image: data.title_image.file.thumbUrl,
+        title_image: data.title_image,
         Text: data.Text,
       },
       {
@@ -230,7 +230,7 @@ CreateNews(data) {
           Title: data.Title,
           Text: data.Text,
           Date: data.Date,
-          title_image: data.title_image.file.thumbUrl,
+          title_image: data.title_image,
         },
         {
           headers: {
