@@ -6,8 +6,13 @@ let News = (props) => {
     <div className={clas.Main}>
       {props.DataNews.map((p) => (
         <div key={p._id} className={clas.item}>
-          <h3 className={clas.Title}>{p.Title}</h3>
-          <p className={clas.Text}>{p.Text}</p>
+          <div className={clas.imbbox}>
+            <img src={p.title_image} alt="" />
+          </div>
+          <div className={clas.textbox}>
+            <h3 className={clas.Title}>{p.Title}</h3>
+            <p className={clas.Text}>{p.Text}</p>
+          </div>
         </div>
       ))}
     </div>
