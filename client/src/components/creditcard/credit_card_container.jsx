@@ -4,7 +4,7 @@ import { compose } from "redux";
 import Creditcard from "./credit_card";
 import { GetCreditCards, GetBank, CleanAllData } from "./../../redux/MainReducer";
 import { Space, Spin } from "antd";
-import clas from "./credit_card.module.less";
+import clas from "./credit_card.module.scss";
 
 let CreditCardCont = (props) => {
   const [succ] = useState(props.succ === true ? true : false);

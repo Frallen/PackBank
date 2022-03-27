@@ -19,7 +19,7 @@ import { useFormik } from "formik";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import clas from "./../admin.module.less";
+import clas from "./../admin.module.scss";
 
 let CreateNews = (props) => {
   const { confirm } = Modal;

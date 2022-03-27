@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import clas from "./header.module.less";
+import clas from "./header.module.scss";
 import { Drawer, Col, Row } from "antd";
 import { AppstoreOutlined } from "@ant-design/icons";
 let Header = (props) => {

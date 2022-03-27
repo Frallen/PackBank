@@ -1,5 +1,5 @@
 import React from "react";
-import clas from "./auth.module.less";
+import clas from "./auth.module.scss";
 import { FormBox } from "./../form/common";
 
 let Auth = (props) => {

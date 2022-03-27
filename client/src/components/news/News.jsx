@@ -1,5 +1,5 @@
 import React from "react";
-import clas from "./news.module.less";
+import clas from "./news.module.scss";
 
 let News = (props) => {
   return (
