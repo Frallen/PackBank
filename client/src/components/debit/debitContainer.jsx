@@ -8,7 +8,7 @@ import {
   CleanAllData,
 } from "./../../redux/MainReducer";
 import { Space, Spin } from "antd";
-import clas from "./debit.module.scss";
+import clas from "./debit.module.less";
 
 let DebitCont = (props) => {
   const [succ] = useState(props.succ === true ? true : false);

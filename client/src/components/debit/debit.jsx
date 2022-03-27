@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Row, Select } from "antd";
 import React from "react";
-import clas from "./debit.module.scss";
+import clas from "./debit.module.less";
 import { NavLink } from "react-router-dom";
 import { Form } from "antd";
 import { useFormik } from "formik";

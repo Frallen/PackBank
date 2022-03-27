@@ -15,7 +15,7 @@ import {
 } from "antd";
 import * as Yup from "yup";
 import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import clas from "./../admin.module.scss";
+import clas from "./../admin.module.less";
 //антд
 const { confirm } = Modal;
 const { Option } = Select;

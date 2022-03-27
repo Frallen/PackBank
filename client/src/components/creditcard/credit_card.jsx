@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Row, Select } from "antd";
 import React from "react";
-import clas from "./credit_card.module.scss";
+import clas from "./credit_card.module.less";
 import { Collapse } from "antd";
 
 import { Form } from "antd";

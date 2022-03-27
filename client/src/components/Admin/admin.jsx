@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import clas from "./admin.module.scss";
+import clas from "./admin.module.less";
 import { Menu } from "antd";
 import {
   BankOutlined,
